@@ -1,0 +1,5 @@
+- Always use /unslop.
+- directory:
+  - `<skill-category>/<skill-name>/SKILL.md`
+  - if script is needed put it inside
+    - `<skill-category>/<skill-name>/scripts`
