@@ -1,5 +1,8 @@
 - Always use /unslop.
 - directory:
-  - `<skill-category>/<skill-name>/SKILL.md`
+  - `src/<skill-category>/<skill-name>/SKILL.md`
   - if script is needed put it inside
-    - `<skill-category>/<skill-name>/scripts`
+    - `src/<skill-category>/<skill-name>/scripts`
+- environment:
+  - `SKILLS_ROOT` env var points to `src/`. Scripts use it to resolve cross-skill imports.
+  - If unset, scripts fall back to `__file__`-relative resolution.
