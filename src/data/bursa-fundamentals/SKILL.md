@@ -16,7 +16,7 @@ No ticker required. This is a market-level data skill.
 
 ## Output format
 
-Write to scratch at: `~/notes/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/bursa-fundamentals.md`
+Write to scratch at: `$ISK_NOTES/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/bursa-fundamentals.md`
 
 When used as part of a ticker analysis, the data provides peer comparison context. When standalone, use `BURSA-OVERVIEW` as ticker placeholder.
 

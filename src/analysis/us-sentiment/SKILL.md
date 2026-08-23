@@ -9,12 +9,12 @@ This skill interprets multiple data sources. It reads from scratch and invokes w
 ## Input
 
 Reads from scratch:
-- `~/notes/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/us-filings.md` (primary)
+- `$ISK_NOTES/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/us-filings.md` (primary)
 - May invoke `utility/web-search` for: analyst consensus, EPS revision data, recent news headlines
 
 ## Output format
 
-Write to scratch at: `~/notes/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/us-sentiment.md`
+Write to scratch at: `$ISK_NOTES/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/us-sentiment.md`
 
 ```markdown
 ---

@@ -60,7 +60,7 @@ Use `utility/report-writer` conventions to assemble the full report with ALL tem
 7. **Risks** - synthesized from all analysis (each skill notes risks)
 8. **Position sizing** - from verdict-synthesis
 
-Write to: `~/notes/YYYY-MM/YYYY-MM-DD-<TICKER>-deep-research.md`
+Write to: `$ISK_NOTES/YYYY-MM/YYYY-MM-DD-<TICKER>-deep-research.md`
 
 ## Full decision tree
 
@@ -110,12 +110,12 @@ Input: ticker
   ├─ Step 4 [Sequential]: analysis/verdict-synthesis                │
   │                                                                 │
   └─ Step 5 [Sequential]: Write full report                         │
-      └─ ~/notes/YYYY-MM/YYYY-MM-DD-<TICKER>-deep-research.md
+      └─ $ISK_NOTES/YYYY-MM/YYYY-MM-DD-<TICKER>-deep-research.md
 ```
 
 ## Output
 
-Final report at: `~/notes/YYYY-MM/YYYY-MM-DD-<TICKER>-deep-research.md`
+Final report at: `$ISK_NOTES/YYYY-MM/YYYY-MM-DD-<TICKER>-deep-research.md`
 
 ```markdown
 # <TICKER> - Deep Research
@@ -166,7 +166,7 @@ Rationale: <conviction + volatility reasoning>
 Note: This is an assessment framework, not financial advice.
 ```
 
-Scratch directory preserved at: `~/notes/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/`
+Scratch directory preserved at: `$ISK_NOTES/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/`
 
 One file per sub-skill invoked:
 - `fundamentals.md`

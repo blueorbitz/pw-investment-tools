@@ -8,7 +8,7 @@ When no conditions are breached, this skill writes nothing (silent success).
 
 ## Input
 
-Reads from: `~/notes/portfolio/holdings.yaml`
+Reads from: `$ISK_NOTES/portfolio/holdings.yaml`
 
 Specifically looks for positions that have the optional `alert_conditions` field.
 
@@ -77,7 +77,7 @@ For conditions the agent cannot evaluate programmatically, it notes "requires ma
 
 ## Pipeline steps
 
-1. Read `~/notes/portfolio/holdings.yaml`
+1. Read `$ISK_NOTES/portfolio/holdings.yaml`
 2. Filter to positions with `alert_conditions` field
 3. For each position with alerts:
    a. Fetch required data (price, indicators, fundamentals as needed)
@@ -88,7 +88,7 @@ For conditions the agent cannot evaluate programmatically, it notes "requires ma
 
 ## Output format
 
-Write ONLY when alerts fire, to: `~/notes/portfolio/alerts/YYYY-MM/YYYY-MM-DD-alerts.md`
+Write ONLY when alerts fire, to: `$ISK_NOTES/portfolio/alerts/YYYY-MM/YYYY-MM-DD-alerts.md`
 
 ```markdown
 # Alert Report
@@ -134,7 +134,7 @@ Alerts fired: Y
 
 ## Output path
 
-`~/notes/portfolio/alerts/YYYY-MM/YYYY-MM-DD-alerts.md`
+`$ISK_NOTES/portfolio/alerts/YYYY-MM/YYYY-MM-DD-alerts.md`
 
 Only written when at least one alert fires. If nothing fires, no file is created.
 

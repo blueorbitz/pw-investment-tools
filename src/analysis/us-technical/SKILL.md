@@ -8,7 +8,7 @@ This skill interprets. It never fetches price data itself.
 
 ## Input
 
-Reads from scratch: `~/notes/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/price-history.md`
+Reads from scratch: `$ISK_NOTES/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/price-history.md`
 
 The price-history scratch file must contain:
 - Price summary (current price, trend, stage, 52wk range)
@@ -21,7 +21,7 @@ The price-history scratch file must contain:
 
 ## Output format
 
-Write to scratch at: `~/notes/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/us-technical.md`
+Write to scratch at: `$ISK_NOTES/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/us-technical.md`
 
 ```markdown
 ---

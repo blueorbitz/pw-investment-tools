@@ -13,7 +13,7 @@ Optional:
 
 ## Output format
 
-Write to scratch at: `~/notes/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/us-macro.md`
+Write to scratch at: `$ISK_NOTES/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/us-macro.md`
 
 When invoked as part of a ticker research flow, use that ticker's scratch directory. When invoked standalone, use `US-MACRO` as the ticker placeholder.
 

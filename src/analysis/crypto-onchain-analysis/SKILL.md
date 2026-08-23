@@ -8,11 +8,11 @@ This skill interprets. It never fetches raw data itself.
 
 ## Input
 
-Reads from scratch: `~/notes/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/crypto-onchain.md`
+Reads from scratch: `$ISK_NOTES/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/crypto-onchain.md`
 
 ## Output format
 
-Write to scratch at: `~/notes/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/crypto-onchain-analysis.md`
+Write to scratch at: `$ISK_NOTES/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/crypto-onchain-analysis.md`
 
 ```markdown
 ---

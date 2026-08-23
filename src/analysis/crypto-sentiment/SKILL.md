@@ -13,7 +13,7 @@ This skill interprets multiple sources. It invokes web search for current sentim
 
 ## Output format
 
-Write to scratch at: `~/notes/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/crypto-sentiment.md`
+Write to scratch at: `$ISK_NOTES/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/crypto-sentiment.md`
 
 ```markdown
 ---

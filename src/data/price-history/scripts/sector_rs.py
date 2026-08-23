@@ -6,8 +6,8 @@ import os
 import json
 from datetime import datetime
 
-SKILLS_ROOT = os.environ.get("SKILLS_ROOT", os.path.join(os.path.dirname(__file__), "..", "..", ".."))
-sys.path.insert(0, os.path.join(SKILLS_ROOT, "utility", "shared-lib", "scripts"))
+ISK_ROOT = os.environ.get("ISK_ROOT", os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+sys.path.insert(0, os.path.join(ISK_ROOT, "utility", "shared-lib", "scripts"))
 from yahoo_cache import fetch_yahoo_cached
 
 

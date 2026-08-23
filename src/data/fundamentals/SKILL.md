@@ -15,7 +15,7 @@ This skill fetches and normalizes. It never interprets or judges the numbers.
 
 ## Output format
 
-Write to scratch at: `~/notes/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/fundamentals.md`
+Write to scratch at: `$ISK_NOTES/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/fundamentals.md`
 
 ```markdown
 ---
@@ -106,7 +106,7 @@ python scripts/financials_fetch.py MSFT
 python scripts/financials_fetch.py 1155
 ```
 
-The scripts use `SKILLS_ROOT` to resolve imports from `utility/shared-lib/scripts/`. If unset, they fall back to `__file__`-relative paths.
+The scripts use `ISK_ROOT` to resolve imports from `utility/shared-lib/scripts/`. If unset, they fall back to `__file__`-relative paths.
 
 ## Error handling
 

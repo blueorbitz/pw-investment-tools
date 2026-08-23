@@ -11,13 +11,13 @@ This skill interprets macro data. It never fetches raw data itself.
 - `market` - which market to assess: `US`, `Bursa`, or `Crypto`
 
 Reads from the corresponding macro data scratch file:
-- US: `~/notes/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/us-macro.md`
-- Bursa: `~/notes/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/bursa-macro.md`
-- Crypto: `~/notes/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/crypto-macro.md`
+- US: `$ISK_NOTES/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/us-macro.md`
+- Bursa: `$ISK_NOTES/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/bursa-macro.md`
+- Crypto: `$ISK_NOTES/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/crypto-macro.md`
 
 ## Output format
 
-Write to scratch at: `~/notes/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/macro-context.md`
+Write to scratch at: `$ISK_NOTES/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/macro-context.md`
 
 ```markdown
 ---

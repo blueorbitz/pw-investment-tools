@@ -64,7 +64,7 @@ Use `utility/report-writer` conventions to assemble the final report. Quick-look
 - Fundamentals (summary from valuation analysis)
 - Technical setup (summary from technical analysis)
 
-Write to: `~/notes/YYYY-MM/YYYY-MM-DD-<TICKER>-quick-look.md`
+Write to: `$ISK_NOTES/YYYY-MM/YYYY-MM-DD-<TICKER>-quick-look.md`
 
 ## Decision tree
 
@@ -87,12 +87,12 @@ Input: ticker
   ├─ [Sequential] verdict-synthesis              │
   │                                              │
   └─ [Sequential] Write report                   │
-      └─ ~/notes/YYYY-MM/YYYY-MM-DD-<TICKER>-quick-look.md
+      └─ $ISK_NOTES/YYYY-MM/YYYY-MM-DD-<TICKER>-quick-look.md
 ```
 
 ## Output
 
-Final report at: `~/notes/YYYY-MM/YYYY-MM-DD-<TICKER>-quick-look.md`
+Final report at: `$ISK_NOTES/YYYY-MM/YYYY-MM-DD-<TICKER>-quick-look.md`
 
 ```markdown
 # <TICKER> - Quick Look
@@ -126,7 +126,7 @@ Thesis: <one sentence>
 <what was not assessed in quick-look that deep-research would cover>
 ```
 
-Scratch directory preserved at: `~/notes/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/`
+Scratch directory preserved at: `$ISK_NOTES/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/`
 
 ## Error handling
 

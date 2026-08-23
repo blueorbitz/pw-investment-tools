@@ -25,23 +25,23 @@ Market-specific skills stay prefixed because their data sources are single-marke
 
 ## Environment variable
 
-Set `SKILLS_ROOT` to point at the `src/` directory so scripts can locate each other regardless of where the workspace is cloned:
+Set `ISK_ROOT` to point at the `src/` directory so scripts can locate each other regardless of where the workspace is cloned:
 
 ```
 # PowerShell
-$env:SKILLS_ROOT = "C:\path\to\investment-skills\src"
+$env:ISK_ROOT = "C:\path\to\investment-skills\src"
 
 # bash/zsh
-export SKILLS_ROOT="/path/to/investment-skills/src"
+export ISK_ROOT="/path/to/investment-skills/src"
 ```
 
-If `SKILLS_ROOT` is unset, scripts fall back to resolving relative to their own file location (works when running from within the workspace tree).
+If `ISK_ROOT` is unset, scripts fall back to resolving relative to their own file location (works when running from within the workspace tree).
 
 ## Required env vars (per skill)
 
 | Env Var | Used by | Source |
 |---------|---------|--------|
-| `SKILLS_ROOT` | all scripts with cross-skill imports | workspace path |
+| `ISK_ROOT` | all scripts with cross-skill imports | workspace path |
 | `FRED_API_KEY` | data/us-macro (fed_liquidity, yield_curve, sentiment_dashboard) | https://fred.stlouisfed.org/docs/api/api_key.html |
 | `SEC_EDGAR_USER_AGENT` | data/us-filings (sec_filings) | "YourName your@email.com" |
 | `BURSAWHALE_CLIENT_ID` | data/bursa-announcements (bursawhale_api) | BursaWhale OAuth |

@@ -2,7 +2,23 @@
 
 ## Purpose
 
-Handles all output file creation for the investment skills network. Responsible for selecting the correct output path, applying the report template, writing final reports to `~/notes/YYYY-MM/`, and writing incremental scratch notes to the `.scratch/` directory. Every skill that produces output calls this skill's conventions rather than inventing its own paths.
+Handles all output file creation for the investment skills network. Responsible for selecting the correct output path, applying the report template, writing final reports, and writing incremental scratch notes. Every skill that produces output follows this skill's conventions rather than inventing its own paths.
+
+## Base path resolution
+
+All output paths are relative to a configurable base directory:
+
+1. Read the `ISK_NOTES` environment variable.
+2. If unset, check for a `.env` file in the workspace root.
+3. If neither is set, default to `~/notes`.
+
+Throughout all SKILL.md files, `$ISK_NOTES` refers to this resolved base path. If you set `ISK_NOTES=/home/user/Dropbox/research`, then `$ISK_NOTES/2024-03/...` becomes `/home/user/Dropbox/research/2024-03/...`.
+
+**When running interactively:** The agent inherits env vars from your shell. Set `ISK_NOTES` in your shell profile or terminal before starting Kiro.
+
+**When running via cron/scheduler:** The helper scripts in `monitor/*/scripts/` read `ISK_NOTES` directly. Set it in your crontab environment or in the scheduler's environment variables panel.
+
+**When no env var is set:** Everything defaults to `~/notes`. This works out of the box with no configuration.
 
 ## Input
 
@@ -99,41 +115,44 @@ If the skill could not produce output (API failure, insufficient data), set `sta
 
 ## Output paths
 
+All paths below use `$ISK_NOTES` as the base directory (defaults to `~/notes` if unset).
+
 ### Final reports
 
 ```
-~/notes/YYYY-MM/YYYY-MM-DD-<TICKER>-<report-type>.md
+$ISK_NOTES/YYYY-MM/YYYY-MM-DD-<TICKER>-<report-type>.md
 ```
 
 Examples:
-- `~/notes/2024-03/2024-03-15-MSFT-quick-look.md`
-- `~/notes/2024-03/2024-03-15-BTC-deep-research.md`
-- `~/notes/2024-03/2024-03-15-1155-deep-research.md`
+- `$ISK_NOTES/2024-03/2024-03-15-MSFT-quick-look.md`
+- `$ISK_NOTES/2024-03/2024-03-15-BTC-deep-research.md`
+- `$ISK_NOTES/2024-03/2024-03-15-1155-deep-research.md`
 
 Ticker in filenames: uppercase, strip exchange suffixes (.KL), replace `/` with `-`.
 
 ### Scratch notes
 
 ```
-~/notes/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/<skill-name>.md
+$ISK_NOTES/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/<skill-name>.md
 ```
 
 Examples:
-- `~/notes/2024-03/.scratch/2024-03-15-MSFT/us-valuation.md`
-- `~/notes/2024-03/.scratch/2024-03-15-MSFT/price-history.md`
-- `~/notes/2024-03/.scratch/2024-03-15-BTC/crypto-onchain.md`
+- `$ISK_NOTES/2024-03/.scratch/2024-03-15-MSFT/us-valuation.md`
+- `$ISK_NOTES/2024-03/.scratch/2024-03-15-MSFT/price-history.md`
+- `$ISK_NOTES/2024-03/.scratch/2024-03-15-BTC/crypto-onchain.md`
 
 ### Monitoring outputs
 
-- Portfolio reviews: `~/notes/portfolio/reviews/YYYY-MM/YYYY-MM-DD-portfolio-review.md`
-- Watchlist scans: `~/notes/watchlist/scans/YYYY-MM/YYYY-MM-DD-watchlist-scan.md`
-- Alerts: `~/notes/portfolio/alerts/YYYY-MM/YYYY-MM-DD-alerts.md`
+- Portfolio reviews: `$ISK_NOTES/portfolio/reviews/YYYY-MM/YYYY-MM-DD-portfolio-review.md`
+- Watchlist scans: `$ISK_NOTES/watchlist/scans/YYYY-MM/YYYY-MM-DD-watchlist-scan.md`
+- Alerts: `$ISK_NOTES/portfolio/alerts/YYYY-MM/YYYY-MM-DD-alerts.md`
 
 ## Error handling
 
 - If the output directory does not exist, create it.
 - If a file already exists at the target path, overwrite it (re-running a skill for the same ticker on the same day replaces the previous output).
 - If writing fails (permissions, disk full), report the error to the calling skill. Do not silently swallow failures.
+- If `ISK_NOTES` is not set in the environment, check for a `.env` file in the workspace root. If it contains `ISK_NOTES=...`, use that value. Otherwise fall back to `~/notes`.
 
 ## Dependencies
 

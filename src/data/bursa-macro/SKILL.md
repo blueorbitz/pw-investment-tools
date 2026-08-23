@@ -12,7 +12,7 @@ None required. This skill always fetches the current Bursa macro state.
 
 ## Output format
 
-Write to scratch at: `~/notes/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/bursa-macro.md`
+Write to scratch at: `$ISK_NOTES/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/bursa-macro.md`
 
 When invoked as part of a ticker research flow, use that ticker's scratch directory. When invoked standalone, use `BURSA-MACRO` as the ticker placeholder.
 

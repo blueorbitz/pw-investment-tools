@@ -6,7 +6,7 @@ Reads the watchlist file, performs lightweight checks on each tracked ticker (pr
 
 ## Input
 
-Reads from: `~/notes/watchlist/watchlist.yaml`
+Reads from: `$ISK_NOTES/watchlist/watchlist.yaml`
 
 ## watchlist.yaml schema
 
@@ -63,7 +63,7 @@ tickers:
 
 ## Pipeline steps
 
-1. Read `~/notes/watchlist/watchlist.yaml`
+1. Read `$ISK_NOTES/watchlist/watchlist.yaml`
 2. For each ticker:
    a. Fetch current price (use yahoo_cache or agent tools)
    b. Calculate % change since added to watchlist
@@ -75,7 +75,7 @@ tickers:
 
 ## Output format
 
-Write to: `~/notes/watchlist/scans/YYYY-MM/YYYY-MM-DD-watchlist-scan.md`
+Write to: `$ISK_NOTES/watchlist/scans/YYYY-MM/YYYY-MM-DD-watchlist-scan.md`
 
 ```markdown
 # Watchlist Scan
@@ -127,7 +127,7 @@ Tickers tracked: X
 
 ## Output path
 
-`~/notes/watchlist/scans/YYYY-MM/YYYY-MM-DD-watchlist-scan.md`
+`$ISK_NOTES/watchlist/scans/YYYY-MM/YYYY-MM-DD-watchlist-scan.md`
 
 ## Entry condition evaluation
 

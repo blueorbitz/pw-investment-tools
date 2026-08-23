@@ -9,13 +9,13 @@ This skill interprets. It reads from scratch and may invoke web search for news 
 ## Input
 
 Reads from scratch:
-- `~/notes/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/bursa-announcements.md` (primary)
+- `$ISK_NOTES/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/bursa-announcements.md` (primary)
 
 May invoke `utility/web-search` for: The Edge Markets articles, i3investor discussions, analyst reports.
 
 ## Output format
 
-Write to scratch at: `~/notes/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/bursa-sentiment.md`
+Write to scratch at: `$ISK_NOTES/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/bursa-sentiment.md`
 
 ```markdown
 ---

@@ -40,7 +40,7 @@ A library of composable Kiro skills organized by concern (data fetching, analysi
 ### Architecture
 
 - All skill source lives under `src/`. Skills follow a `src/<category>/<skill-name>/SKILL.md` directory layout. Categories: `data/`, `analysis/`, `orchestrator/`, `utility/`, `monitor/`.
-- The `SKILLS_ROOT` environment variable points to the `src/` directory. All scripts resolve cross-skill imports via `SKILLS_ROOT` (falls back to `__file__`-relative path if unset). This makes the workspace portable regardless of where it's cloned.
+- The `ISK_ROOT` environment variable points to the `src/` directory. All scripts resolve cross-skill imports via `ISK_ROOT` (falls back to `__file__`-relative path if unset). This makes the workspace portable regardless of where it's cloned.
 - Market prefix in skill name prevents conflicts: `bursa-fundamentals`, `us-fundamentals`, `crypto-fundamentals`.
 - Data skills fetch and normalize. They never interpret. Analysis skills receive data and produce judgments. This separation lets data sources be swapped without rewriting analysis logic.
 - One orchestrator per research depth (quick-look, deep-research). Each branches internally by market type via a decision tree rather than separate per-market orchestrators.
@@ -90,7 +90,7 @@ A library of composable Kiro skills organized by concern (data fetching, analysi
 
 ### Environment variables
 
-- `SKILLS_ROOT` - path to the `src/` directory. Scripts use this to locate shared libraries and cross-skill imports. If unset, scripts fall back to resolving relative to their own `__file__` location.
+- `ISK_ROOT` - path to the `src/` directory. Scripts use this to locate shared libraries and cross-skill imports. If unset, scripts fall back to resolving relative to their own `__file__` location.
 - No dedicated env-check skill. Scripts read env directly. Root README documents all required env vars with a table mapping each to the skills that need it.
 
 ### Dependency declaration

@@ -8,7 +8,7 @@ This skill interprets. It never fetches raw data itself.
 
 ## Input
 
-Reads from scratch: `~/notes/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/fundamentals.md`
+Reads from scratch: `$ISK_NOTES/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/fundamentals.md`
 
 The fundamentals scratch file must contain (at minimum):
 - Revenue and earnings history (3-5 years)
@@ -20,7 +20,7 @@ If any input is marked `status: unavailable`, this skill adjusts its confidence 
 
 ## Output format
 
-Write to scratch at: `~/notes/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/us-valuation.md`
+Write to scratch at: `$ISK_NOTES/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/us-valuation.md`
 
 ```markdown
 ---

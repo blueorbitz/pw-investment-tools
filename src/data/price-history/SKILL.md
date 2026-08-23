@@ -22,7 +22,7 @@ This skill fetches and computes. It never interprets or judges the output.
 
 ## Output format
 
-Write to scratch at: `~/notes/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/price-history.md`
+Write to scratch at: `$ISK_NOTES/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/price-history.md`
 
 ```markdown
 ---

@@ -8,7 +8,7 @@ The output structure is universal across all markets. The weighting of inputs va
 
 ## Input
 
-Reads all available analysis scratch files from: `~/notes/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/`
+Reads all available analysis scratch files from: `$ISK_NOTES/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/`
 
 Expected files (not all required):
 - `us-valuation.md` or `bursa-valuation.md` or `crypto-valuation.md`
@@ -21,7 +21,7 @@ The skill must function with partial inputs. At minimum, it needs valuation + te
 
 ## Output format
 
-Write to scratch at: `~/notes/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/verdict-synthesis.md`
+Write to scratch at: `$ISK_NOTES/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/verdict-synthesis.md`
 
 ```markdown
 ---

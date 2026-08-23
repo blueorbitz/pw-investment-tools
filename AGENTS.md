@@ -4,5 +4,6 @@
   - if script is needed put it inside
     - `src/<skill-category>/<skill-name>/scripts`
 - environment:
-  - `SKILLS_ROOT` env var points to `src/`. Scripts use it to resolve cross-skill imports.
+  - `ISK_ROOT` env var points to `src/`. Scripts use it to resolve cross-skill imports.
   - If unset, scripts fall back to `__file__`-relative resolution.
+  - `ISK_NOTES` env var points to the output notes directory. Defaults to `~/notes` if unset.

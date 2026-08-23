@@ -9,12 +9,12 @@ This skill interprets. It never fetches raw data itself.
 ## Input
 
 Reads from scratch:
-- `~/notes/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/price-history.md` (required)
-- `~/notes/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/crypto-derivatives.md` (optional, enriches analysis)
+- `$ISK_NOTES/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/price-history.md` (required)
+- `$ISK_NOTES/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/crypto-derivatives.md` (optional, enriches analysis)
 
 ## Output format
 
-Write to scratch at: `~/notes/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/crypto-technical.md`
+Write to scratch at: `$ISK_NOTES/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/crypto-technical.md`
 
 ```markdown
 ---

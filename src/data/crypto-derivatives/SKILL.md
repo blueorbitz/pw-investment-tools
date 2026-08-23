@@ -13,7 +13,7 @@ This skill fetches and structures. It never interprets or judges the data.
 
 ## Output format
 
-Write to scratch at: `~/notes/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/crypto-derivatives.md`
+Write to scratch at: `$ISK_NOTES/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/crypto-derivatives.md`
 
 ```markdown
 ---

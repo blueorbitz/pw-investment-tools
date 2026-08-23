@@ -6,7 +6,7 @@ Reads the portfolio holdings file, fetches current prices for each position, com
 
 ## Input
 
-Reads from: `~/notes/portfolio/holdings.yaml`
+Reads from: `$ISK_NOTES/portfolio/holdings.yaml`
 
 ## holdings.yaml schema
 
@@ -76,7 +76,7 @@ positions:
 
 ## Pipeline steps
 
-1. Read `~/notes/portfolio/holdings.yaml`
+1. Read `$ISK_NOTES/portfolio/holdings.yaml`
 2. For each position:
    a. Fetch current price (use `data/price-history` scripts or Yahoo Finance directly)
    b. Calculate: P&L %, distance to target, distance to stop
@@ -87,7 +87,7 @@ positions:
 
 ## Output format
 
-Write to: `~/notes/portfolio/reviews/YYYY-MM/YYYY-MM-DD-portfolio-review.md`
+Write to: `$ISK_NOTES/portfolio/reviews/YYYY-MM/YYYY-MM-DD-portfolio-review.md`
 
 ```markdown
 # Portfolio Review
@@ -136,7 +136,7 @@ Accounts: ibkr, mplus, binance
 
 ## Output path
 
-`~/notes/portfolio/reviews/YYYY-MM/YYYY-MM-DD-portfolio-review.md`
+`$ISK_NOTES/portfolio/reviews/YYYY-MM/YYYY-MM-DD-portfolio-review.md`
 
 ## Error handling
 
