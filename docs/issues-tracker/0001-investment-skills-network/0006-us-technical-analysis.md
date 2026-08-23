@@ -4,9 +4,9 @@
 
 **Blocked by:** 0003 (shared price history data skill).
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] `analysis/us-technical/SKILL.md` exists with sections: Purpose, Input (reads scratch from data/price-history), Output Format, Analysis Framework, Error Handling, Dependencies
-- [ ] Skill documents: stage identification, RS vs SPY interpretation, S/R level methodology, MA structure (golden/death cross, slope), volume context
-- [ ] Output includes: current stage, trend direction, key levels (support 1/2, resistance 1/2), suggested entry zone, stop loss zone
-- [ ] Dependencies section lists `data/price-history` by path
+- [x] `analysis/us-technical/SKILL.md` exists with sections: Purpose, Input (reads scratch from data/price-history), Output Format, Analysis Framework, Error Handling, Dependencies
+- [x] Skill documents: stage identification, RS vs SPY interpretation, S/R level methodology, MA structure (golden/death cross, slope), volume context
+- [x] Output includes: current stage, trend direction, key levels (support 1/2, resistance 1/2), suggested entry zone, stop loss zone
+- [x] Dependencies section lists `data/price-history` by path

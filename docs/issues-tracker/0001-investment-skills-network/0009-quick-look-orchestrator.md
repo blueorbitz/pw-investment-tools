@@ -4,11 +4,11 @@
 
 **Blocked by:** 0001 (report-writer), 0005 (US valuation), 0006 (US technical), 0008 (verdict synthesis).
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] `orchestrator/quick-look/SKILL.md` exists with sections: Purpose, Input (ticker, optional market override), Pipeline Steps, Decision Tree, Output, Error Handling, Dependencies
-- [ ] Decision tree documents market detection logic and which sub-skills to invoke per market
-- [ ] Pipeline documents parallel vs sequential steps with clear ordering
-- [ ] Skill references report-writer for final output formatting
-- [ ] Running quick-look on a US ticker produces a file at `~/notes/YYYY-MM/YYYY-MM-DD-<TICKER>-quick-look.md` with Verdict + Fundamentals + Technical sections
-- [ ] Error handling: continues with partial data, notes gaps
+- [x] `orchestrator/quick-look/SKILL.md` exists with sections: Purpose, Input (ticker, optional market override), Pipeline Steps, Decision Tree, Output, Error Handling, Dependencies
+- [x] Decision tree documents market detection logic and which sub-skills to invoke per market
+- [x] Pipeline documents parallel vs sequential steps with clear ordering
+- [x] Skill references report-writer for final output formatting
+- [x] Running quick-look on a US ticker produces a file at `~/notes/YYYY-MM/YYYY-MM-DD-<TICKER>-quick-look.md` with Verdict + Fundamentals + Technical sections
+- [x] Error handling: continues with partial data, notes gaps

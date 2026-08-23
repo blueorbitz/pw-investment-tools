@@ -8,11 +8,11 @@ Include `monitor/portfolio-review/scripts/run-review.sh` (or .ps1) as the cron t
 
 **Blocked by:** 0001 (report-writer for output formatting).
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] `monitor/portfolio-review/SKILL.md` exists with sections: Purpose, Input (reads holdings.yaml), Pipeline Steps, Output Format, Output Path, Error Handling, Dependencies
-- [ ] holdings.yaml schema documented with example showing multi-account, multi-market positions
-- [ ] Skill checks each position: current price vs entry (P&L%), current vs target (progress), current vs stop (breach?)
-- [ ] Output flags positions needing action: stop breaches, target reached, thesis invalidated
-- [ ] Helper script exists in `scripts/` that can be called by external cron
-- [ ] Output writes to `~/notes/portfolio/reviews/YYYY-MM/YYYY-MM-DD-portfolio-review.md`
+- [x] `monitor/portfolio-review/SKILL.md` exists with sections: Purpose, Input (reads holdings.yaml), Pipeline Steps, Output Format, Output Path, Error Handling, Dependencies
+- [x] holdings.yaml schema documented with example showing multi-account, multi-market positions
+- [x] Skill checks each position: current price vs entry (P&L%), current vs target (progress), current vs stop (breach?)
+- [x] Output flags positions needing action: stop breaches, target reached, thesis invalidated
+- [x] Helper script exists in `scripts/` that can be called by external cron
+- [x] Output writes to `~/notes/portfolio/reviews/YYYY-MM/YYYY-MM-DD-portfolio-review.md`

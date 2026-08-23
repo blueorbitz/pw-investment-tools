@@ -4,10 +4,10 @@
 
 **Blocked by:** None (can start immediately).
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] `utility/report-writer/SKILL.md` exists with sections: Purpose, Input, Output Format (report template with Verdict/Thesis/Fundamentals/Technical Setup/Sentiment & News/Macro Context/Risks/Position Sizing), Output Paths, Error Handling, Dependencies
-- [ ] Report-writer documents the verdict block format: Action, Conviction, Target Price, Timeframe, Stop Loss, one-line thesis
-- [ ] Report-writer documents scratch note path convention: `~/notes/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/<skill-name>.md`
-- [ ] `utility/web-search/SKILL.md` exists with sections: Purpose, When to Use, Input, Output Format, Error Handling, Dependencies
-- [ ] Web-search skill instructs the agent to prefer structured APIs and use web search only as fallback or for follow-up questions
+- [x] `utility/report-writer/SKILL.md` exists with sections: Purpose, Input, Output Format (report template with Verdict/Thesis/Fundamentals/Technical Setup/Sentiment & News/Macro Context/Risks/Position Sizing), Output Paths, Error Handling, Dependencies
+- [x] Report-writer documents the verdict block format: Action, Conviction, Target Price, Timeframe, Stop Loss, one-line thesis
+- [x] Report-writer documents scratch note path convention: `~/notes/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/<skill-name>.md`
+- [x] `utility/web-search/SKILL.md` exists with sections: Purpose, When to Use, Input, Output Format, Error Handling, Dependencies
+- [x] Web-search skill instructs the agent to prefer structured APIs and use web search only as fallback or for follow-up questions

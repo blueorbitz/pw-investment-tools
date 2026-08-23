@@ -9,11 +9,11 @@ Also: `data/bursa-fundamentals/SKILL.md` wraps the market overview + fund flow s
 
 **Blocked by:** None (can start immediately, but logically last due to data source difficulty).
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] `data/bursa-announcements/SKILL.md` exists with: Purpose, Input, Output Format, Data Sources (BursaWhale API + Bursa website), Error Handling, Dependencies
-- [ ] Skill references existing `bursawhale_api.py` for insider transaction data
-- [ ] `data/bursa-macro/SKILL.md` exists with: Purpose, Input, Output Format, Data Sources (BNM, Yahoo, TradingView), Error Handling, Dependencies
-- [ ] `data/bursa-fundamentals/SKILL.md` exists wrapping `bursa_flows.py` for market overview + fund flow guidance
-- [ ] Error handling is lenient: "unavailable" is acceptable given source fragility
-- [ ] Required env vars documented: BURSAWHALE_CLIENT_ID, BURSAWHALE_CLIENT_SECRET
+- [x] `data/bursa-announcements/SKILL.md` exists with: Purpose, Input, Output Format, Data Sources (BursaWhale API + Bursa website), Error Handling, Dependencies
+- [x] Skill references existing `bursawhale_api.py` for insider transaction data
+- [x] `data/bursa-macro/SKILL.md` exists with: Purpose, Input, Output Format, Data Sources (BNM, Yahoo, TradingView), Error Handling, Dependencies
+- [x] `data/bursa-fundamentals/SKILL.md` exists wrapping `bursa_flows.py` for market overview + fund flow guidance
+- [x] Error handling is lenient: "unavailable" is acceptable given source fragility
+- [x] Required env vars documented: BURSAWHALE_CLIENT_ID, BURSAWHALE_CLIENT_SECRET

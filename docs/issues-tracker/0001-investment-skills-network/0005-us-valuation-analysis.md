@@ -4,10 +4,10 @@
 
 **Blocked by:** 0002 (shared fundamentals data skill).
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] `analysis/us-valuation/SKILL.md` exists with sections: Purpose, Input (reads scratch from data/fundamentals), Output Format, Analysis Framework, Error Handling, Dependencies
-- [ ] Skill documents the analysis framework: DCF sanity check, multiples vs sector, PEG interpretation, margin quality, earnings momentum
-- [ ] Output includes a clear valuation verdict (cheap/fair/expensive) with one-paragraph reasoning
-- [ ] Dependencies section lists `data/fundamentals` by path
-- [ ] Skill never fetches data itself, only interprets what's in scratch
+- [x] `analysis/us-valuation/SKILL.md` exists with sections: Purpose, Input (reads scratch from data/fundamentals), Output Format, Analysis Framework, Error Handling, Dependencies
+- [x] Skill documents the analysis framework: DCF sanity check, multiples vs sector, PEG interpretation, margin quality, earnings momentum
+- [x] Output includes a clear valuation verdict (cheap/fair/expensive) with one-paragraph reasoning
+- [x] Dependencies section lists `data/fundamentals` by path
+- [x] Skill never fetches data itself, only interprets what's in scratch

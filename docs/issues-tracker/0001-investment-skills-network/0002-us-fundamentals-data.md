@@ -6,10 +6,10 @@ Existing scripts: `financials_fetch.py` (revenue, operating income, FCF, net inc
 
 **Blocked by:** None (can start immediately). Scripts already working.
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] `data/fundamentals/SKILL.md` exists with sections: Purpose, Input (ticker - auto-detects market), Output Format, Data Sources (Yahoo for US, KLSE Screener for Bursa), Error Handling, Dependencies
-- [ ] Skill documents per-market metrics: US (PE, PEG, FCF yield, margins, EPS revisions, buybacks), Bursa (PE, PB, DY, ROE, revenue growth, cash/debt, shareholdings)
-- [ ] Skill references both existing scripts: `financials_fetch.py` and `dividend_fetch.py`
-- [ ] Output writes to scratch path convention from report-writer
-- [ ] Error handling: if API fails, try fallback; if both fail, write "unavailable" with reason
+- [x] `data/fundamentals/SKILL.md` exists with sections: Purpose, Input (ticker - auto-detects market), Output Format, Data Sources (Yahoo for US, KLSE Screener for Bursa), Error Handling, Dependencies
+- [x] Skill documents per-market metrics: US (PE, PEG, FCF yield, margins, EPS revisions, buybacks), Bursa (PE, PB, DY, ROE, revenue growth, cash/debt, shareholdings)
+- [x] Skill references both existing scripts: `financials_fetch.py` and `dividend_fetch.py`
+- [x] Output writes to scratch path convention from report-writer
+- [x] Error handling: if API fails, try fallback; if both fail, write "unavailable" with reason

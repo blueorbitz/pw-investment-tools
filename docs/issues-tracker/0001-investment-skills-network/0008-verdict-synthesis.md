@@ -4,11 +4,11 @@
 
 **Blocked by:** 0005 (US valuation), 0006 (US technical), 0007 (macro context). Needs at least valuation + technical to produce a meaningful verdict.
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] `analysis/verdict-synthesis/SKILL.md` exists with sections: Purpose, Input (reads all analysis scratch files for the ticker), Output Format, Weighting Framework, Error Handling, Dependencies
-- [ ] Skill documents the verdict block format: Action (Buy/Sell/Hold), Conviction (High/Medium/Low), Target Price, Timeframe, Stop Loss, Thesis (one paragraph)
-- [ ] Skill documents position sizing: suggest allocation % range (e.g., "1-3%") based on conviction and volatility, clearly labeled as assessment not advice
-- [ ] Skill documents market-specific weighting adjustments
-- [ ] Skill handles partial inputs: if some analysis is missing, adjust confidence downward and note gaps
-- [ ] Dependencies lists all analysis skills as conditional inputs
+- [x] `analysis/verdict-synthesis/SKILL.md` exists with sections: Purpose, Input (reads all analysis scratch files for the ticker), Output Format, Weighting Framework, Error Handling, Dependencies
+- [x] Skill documents the verdict block format: Action (Buy/Sell/Hold), Conviction (High/Medium/Low), Target Price, Timeframe, Stop Loss, Thesis (one paragraph)
+- [x] Skill documents position sizing: suggest allocation % range (e.g., "1-3%") based on conviction and volatility, clearly labeled as assessment not advice
+- [x] Skill documents market-specific weighting adjustments
+- [x] Skill handles partial inputs: if some analysis is missing, adjust confidence downward and note gaps
+- [x] Dependencies lists all analysis skills as conditional inputs

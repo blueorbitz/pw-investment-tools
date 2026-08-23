@@ -11,13 +11,13 @@ Also update `analysis/verdict-synthesis/SKILL.md` and `analysis/macro-context/SK
 
 **Blocked by:** 0012 (crypto data skills), 0008 (verdict synthesis exists to be updated).
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] All four crypto analysis SKILL.md files exist with correct sections
-- [ ] crypto-valuation documents: no-PE framework, tokenomics scoring, TVL trend interpretation, revenue quality metrics
-- [ ] crypto-technical documents: 24/7 handling, funding rate interpretation, liquidation zone awareness, BTC correlation usage
-- [ ] crypto-onchain-analysis documents: accumulation/distribution framework, whale signal interpretation, network health scoring
-- [ ] crypto-sentiment documents: sources (CT, governance forums, GitHub), signal weighting
-- [ ] verdict-synthesis updated with crypto weighting (on-chain weighted higher)
-- [ ] macro-context updated with crypto logic (DXY, stablecoin supply, liquidity proxy)
-- [ ] Deep-research and quick-look orchestrators work end-to-end with a crypto token
+- [x] All four crypto analysis SKILL.md files exist with correct sections
+- [x] crypto-valuation documents: no-PE framework, tokenomics scoring, TVL trend interpretation, revenue quality metrics
+- [x] crypto-technical documents: 24/7 handling, funding rate interpretation, liquidation zone awareness, BTC correlation usage
+- [x] crypto-onchain-analysis documents: accumulation/distribution framework, whale signal interpretation, network health scoring
+- [x] crypto-sentiment documents: sources (CT, governance forums, GitHub), signal weighting
+- [x] verdict-synthesis updated with crypto weighting (on-chain weighted higher)
+- [x] macro-context updated with crypto logic (DXY, stablecoin supply, liquidity proxy)
+- [x] Deep-research and quick-look orchestrators work end-to-end with a crypto token

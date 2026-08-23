@@ -4,11 +4,11 @@
 
 **Blocked by:** 0016 (portfolio review establishes holdings.yaml schema and proves the monitor pattern).
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] `monitor/alert-checker/SKILL.md` exists with sections: Purpose, Input (reads holdings.yaml alert_conditions field), Pipeline Steps, Output Format, Output Path, Error Handling, Dependencies
-- [ ] holdings.yaml schema extended with optional `alert_conditions` field (list of free-text conditions)
-- [ ] Skill documents how the agent interprets and evaluates free-text conditions against current data
-- [ ] Output writes only when alerts fire, to `~/notes/portfolio/alerts/YYYY-MM/YYYY-MM-DD-alerts.md`
-- [ ] Helper script in `scripts/` for cron invocation (can run more frequently than weekly for crypto)
-- [ ] When no conditions are breached, skill writes nothing (silent success)
+- [x] `monitor/alert-checker/SKILL.md` exists with sections: Purpose, Input (reads holdings.yaml alert_conditions field), Pipeline Steps, Output Format, Output Path, Error Handling, Dependencies
+- [x] holdings.yaml schema extended with optional `alert_conditions` field (list of free-text conditions)
+- [x] Skill documents how the agent interprets and evaluates free-text conditions against current data
+- [x] Output writes only when alerts fire, to `~/notes/portfolio/alerts/YYYY-MM/YYYY-MM-DD-alerts.md`
+- [x] Helper script in `scripts/` for cron invocation (can run more frequently than weekly for crypto)
+- [x] When no conditions are breached, skill writes nothing (silent success)

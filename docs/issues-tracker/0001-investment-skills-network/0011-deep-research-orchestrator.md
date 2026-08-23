@@ -4,11 +4,11 @@
 
 **Blocked by:** 0009 (quick-look, proves the pipeline pattern works), 0010 (US sentiment completes US coverage), 0007 (macro context).
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] `orchestrator/deep-research/SKILL.md` exists with sections: Purpose, Input (ticker, optional market override), Full Pipeline Steps, Decision Tree (all 3 markets), Output, Error Handling, Dependencies
-- [ ] Decision tree covers all three markets with correct sub-skill selection per market
-- [ ] Pipeline documents the full parallel/sequential execution plan
-- [ ] Running deep-research on a US ticker produces `~/notes/YYYY-MM/YYYY-MM-DD-<TICKER>-deep-research.md` with all report sections: Verdict, Thesis, Fundamentals, Technical Setup, Sentiment & News, Macro Context, Risks, Position Sizing
-- [ ] Scratch directory preserved with one file per sub-skill invoked
-- [ ] Error handling: partial data flows through, gaps noted in report
+- [x] `orchestrator/deep-research/SKILL.md` exists with sections: Purpose, Input (ticker, optional market override), Full Pipeline Steps, Decision Tree (all 3 markets), Output, Error Handling, Dependencies
+- [x] Decision tree covers all three markets with correct sub-skill selection per market
+- [x] Pipeline documents the full parallel/sequential execution plan
+- [x] Running deep-research on a US ticker produces `~/notes/YYYY-MM/YYYY-MM-DD-<TICKER>-deep-research.md` with all report sections: Verdict, Thesis, Fundamentals, Technical Setup, Sentiment & News, Macro Context, Risks, Position Sizing
+- [x] Scratch directory preserved with one file per sub-skill invoked
+- [x] Error handling: partial data flows through, gaps noted in report

@@ -10,12 +10,12 @@ Also update verdict-synthesis and macro-context for Bursa-specific weighting (di
 
 **Blocked by:** 0014 (Bursa data skills), 0008 (verdict synthesis exists to update).
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] All three Bursa analysis SKILL.md files exist with correct sections
-- [ ] bursa-valuation documents: dividend-focused framework, peer comparison methodology for KLCI/sector, quality scoring criteria
-- [ ] bursa-technical documents: weekly chart preference, volume confirmation requirement, wider stop bands, low-liquidity awareness
-- [ ] bursa-sentiment documents: sources (Bursa filings, The Edge, i3investor), insider transaction interpretation
-- [ ] verdict-synthesis updated with Bursa weighting (DY weighted higher, volume confirmation for technical)
-- [ ] macro-context updated with Bursa logic (OPR, MYR, palm oil, ASEAN flows)
-- [ ] Deep-research and quick-look work end-to-end with a Bursa ticker (e.g., MAYBANK, 1155.KL)
+- [x] All three Bursa analysis SKILL.md files exist with correct sections
+- [x] bursa-valuation documents: dividend-focused framework, peer comparison methodology for KLCI/sector, quality scoring criteria
+- [x] bursa-technical documents: weekly chart preference, volume confirmation requirement, wider stop bands, low-liquidity awareness
+- [x] bursa-sentiment documents: sources (Bursa filings, The Edge, i3investor), insider transaction interpretation
+- [x] verdict-synthesis updated with Bursa weighting (DY weighted higher, volume confirmation for technical)
+- [x] macro-context updated with Bursa logic (OPR, MYR, palm oil, ASEAN flows)
+- [x] Deep-research and quick-look work end-to-end with a Bursa ticker (e.g., MAYBANK, 1155.KL)

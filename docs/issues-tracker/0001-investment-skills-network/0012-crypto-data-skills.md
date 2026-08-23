@@ -9,13 +9,13 @@
 
 **Blocked by:** None (can start immediately, but logically follows after US slice is proven).
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] All four SKILL.md files exist under `data/` with correct naming
-- [ ] Each skill has: Purpose, Input, Output Format, Data Sources, Error Handling, Dependencies sections
-- [ ] crypto-fundamentals covers: market cap, FDV, supply breakdown, TVL, revenue, unlock schedule
-- [ ] crypto-onchain covers: exchange flows, whale wallets, active addresses, staking ratios
-- [ ] crypto-derivatives covers: funding rates, OI, liquidation levels
-- [ ] crypto-macro covers: DXY, stablecoin supply, ETF flows, liquidity proxy
-- [ ] Each documents primary source + env vars needed (API keys)
-- [ ] Note: crypto price history is handled by shared `data/price-history` (ticket 0003)
+- [x] All four SKILL.md files exist under `data/` with correct naming
+- [x] Each skill has: Purpose, Input, Output Format, Data Sources, Error Handling, Dependencies sections
+- [x] crypto-fundamentals covers: market cap, FDV, supply breakdown, TVL, revenue, unlock schedule
+- [x] crypto-onchain covers: exchange flows, whale wallets, active addresses, staking ratios
+- [x] crypto-derivatives covers: funding rates, OI, liquidation levels
+- [x] crypto-macro covers: DXY, stablecoin supply, ETF flows, liquidity proxy
+- [x] Each documents primary source + env vars needed (API keys)
+- [x] Note: crypto price history is handled by shared `data/price-history` (ticket 0003)
