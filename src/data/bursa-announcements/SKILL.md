@@ -1,10 +1,7 @@
-# Bursa announcements data
-
-## Purpose
-
-Fetches Bursa Malaysia corporate announcements and insider transaction data. Covers corporate actions, quarterly results, dividend declarations, share buybacks, and insider buying/selling. This is the Bursa equivalent of SEC filings for US equities.
-
-This skill fetches and structures. It never interprets or judges the data.
+---
+name: bursa-announcements
+description: Fetches Bursa Malaysia corporate announcements and insider transaction data including corporate actions, quarterly results, dividends, and share buybacks.
+---
 
 ## Input
 

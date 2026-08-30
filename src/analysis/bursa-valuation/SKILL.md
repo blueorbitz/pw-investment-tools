@@ -1,10 +1,7 @@
-# Bursa valuation analysis
-
-## Purpose
-
-Takes the structured financial data from `data/fundamentals` (Bursa route) and market context from `data/bursa-fundamentals` to produce a valuation assessment for Bursa Malaysia equities. Dividend yield is weighted higher than for US equities. The Malaysian market has a strong income-investor culture, so sustainable dividend payers command a premium.
-
-This skill interprets. It never fetches raw data itself.
+---
+name: bursa-valuation
+description: Produces a valuation assessment for Bursa Malaysia equities with higher weighting on dividend yield given the market's income-investor culture.
+---
 
 ## Input
 

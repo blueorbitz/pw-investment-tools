@@ -1,10 +1,7 @@
-# Bursa macro data
-
-## Purpose
-
-Fetches macroeconomic indicators that drive the Malaysian equity market: BNM policy rate, USD/MYR exchange rate, palm oil futures, commodity indices, and ASEAN fund flow data. Malaysia's market is heavily influenced by commodity prices, foreign fund flows, and regional dynamics.
-
-This skill fetches and structures. It never interprets or judges the data.
+---
+name: bursa-macro
+description: Fetches macroeconomic indicators for the Malaysian equity market including BNM policy rate, USD/MYR, palm oil futures, and ASEAN fund flow data.
+---
 
 ## Input
 

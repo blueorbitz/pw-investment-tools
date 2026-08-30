@@ -4,86 +4,57 @@ A library of composable Kiro skills for investment research across three markets
 
 ## Skill map
 
+The old graph tried to show every skill call at once. It was technically complete but hard to read. These three routes show how you use the system. The catalogue names every skill behind each route.
+
+### Quick look
+
 ```mermaid
-graph TD
-    %% Orchestrators (entry points)
-    QL[orchestrator/quick-look]:::orch
-    DR[orchestrator/deep-research]:::orch
+flowchart LR
+    QL[orchestrator/quick-look]:::orch --> DATA[data/fundamentals<br/>data/price-history]:::data --> ANALYSIS[analysis/us-valuation<br/>analysis/us-technical]:::analysis --> VERDICT[analysis/verdict-synthesis]:::analysis --> REPORT[utility/report-writer]:::util
 
-    %% Monitors (entry points)
-    PR[monitor/portfolio-review]:::mon
-    WS[monitor/watchlist-scan]:::mon
-    AC[monitor/alert-checker]:::mon
-
-    %% Data layer
-    FUN[data/fundamentals]:::data
-    PH[data/price-history]:::data
-    UM[data/us-macro]:::data
-    UF[data/us-filings]:::data
-    BA[data/bursa-announcements]:::data
-    BF[data/bursa-fundamentals]:::data
-    BM[data/bursa-macro]:::data
-    CF[data/crypto-fundamentals]:::data
-    CO[data/crypto-onchain]:::data
-    CD[data/crypto-derivatives]:::data
-    CM[data/crypto-macro]:::data
-
-    %% Analysis layer
-    UV[analysis/us-valuation]:::analysis
-    UT[analysis/us-technical]:::analysis
-    US[analysis/us-sentiment]:::analysis
-    BV[analysis/bursa-valuation]:::analysis
-    BT[analysis/bursa-technical]:::analysis
-    BS[analysis/bursa-sentiment]:::analysis
-    CV[analysis/crypto-valuation]:::analysis
-    CT[analysis/crypto-technical]:::analysis
-    COA[analysis/crypto-onchain-analysis]:::analysis
-    CS[analysis/crypto-sentiment]:::analysis
-    MC[analysis/macro-context]:::analysis
-    VS[analysis/verdict-synthesis]:::analysis
-
-    %% Utility
-    RW[utility/report-writer]:::util
-    WSR[utility/web-search]:::util
-
-    %% Orchestrator connections
-    QL --> FUN & PH
-    QL --> UV & UT
-    QL --> VS --> RW
-
-    DR --> FUN & PH & UM & UF & BA & BF & BM & CF & CO & CD & CM
-    DR --> UV & UT & US & BV & BT & BS & CV & CT & COA & CS & MC
-    DR --> VS
-
-    %% Analysis reads data
-    UV --> FUN
-    UT --> PH
-    US --> UF & WSR
-    BV --> FUN & BF
-    BT --> PH
-    BS --> BA & WSR
-    CV --> CF
-    CT --> PH & CD
-    COA --> CO
-    CS --> WSR
-    MC --> UM & BM & CM
-
-    %% Monitors
-    PR --> PH
-    WS --> PH & WSR
-    AC --> PH & CD & WSR
-
-    %% Styles
-    classDef orch fill:#ff9,stroke:#b80,stroke-width:3px
-    classDef mon fill:#cfc,stroke:#080,stroke-width:2px
-    classDef data fill:#def,stroke:#48a
-    classDef analysis fill:#fde,stroke:#a48
-    classDef util fill:#eee,stroke:#888
+    classDef orch fill:#fef3c7,stroke:#92400e,stroke-width:3px,color:#111827
+    classDef data fill:#bfdbfe,stroke:#1d4ed8,stroke-width:2px,color:#111827
+    classDef analysis fill:#fbcfe8,stroke:#be185d,stroke-width:2px,color:#111827
+    classDef util fill:#e5e7eb,stroke:#4b5563,stroke-width:2px,color:#111827
 ```
 
-**Legend:** Yellow = orchestrators (main entry points), Green = monitors (scheduled), Blue = data skills, Pink = analysis skills, Grey = utilities.
+### Deep research
 
-The two orchestrators are the primary skills you invoke for research. Monitors run on a schedule.
+```mermaid
+flowchart LR
+    DR[orchestrator/deep-research]:::orch --> DATA[Market data pack<br/>US, Bursa, or Crypto]:::data --> ANALYSIS[Market analysis pack<br/>valuation, technical, sentiment, and macro]:::analysis --> VERDICT[analysis/verdict-synthesis]:::analysis --> REPORT[utility/report-writer]:::util
+
+    classDef orch fill:#fef3c7,stroke:#92400e,stroke-width:3px,color:#111827
+    classDef data fill:#bfdbfe,stroke:#1d4ed8,stroke-width:2px,color:#111827
+    classDef analysis fill:#fbcfe8,stroke:#be185d,stroke-width:2px,color:#111827
+    classDef util fill:#e5e7eb,stroke:#4b5563,stroke-width:2px,color:#111827
+```
+
+### Scheduled monitoring
+
+```mermaid
+flowchart TB
+    DATA[Market data<br/>price-history and crypto-derivatives]:::data --> MONITORS[portfolio-review<br/>watchlist-scan<br/>alert-checker]:::mon
+    SEARCH[utility/web-search]:::util --> MONITORS
+
+    classDef mon fill:#bbf7d0,stroke:#166534,stroke-width:2px,color:#111827
+    classDef data fill:#bfdbfe,stroke:#1d4ed8,stroke-width:2px,color:#111827
+    classDef util fill:#e5e7eb,stroke:#4b5563,stroke-width:2px,color:#111827
+```
+
+### Skill catalogue
+
+| Group | Skills |
+|-------|--------|
+| Research entry points | `orchestrator/quick-look`, `orchestrator/deep-research` |
+| Scheduled monitors | `monitor/portfolio-review`, `monitor/watchlist-scan`, `monitor/alert-checker` |
+| Shared data | `data/fundamentals` for US and Bursa financials, `data/price-history` for all markets |
+| US pack | `data/us-macro`, `data/us-filings`; `analysis/us-valuation`, `analysis/us-technical`, `analysis/us-sentiment` |
+| Bursa pack | `data/bursa-announcements`, `data/bursa-fundamentals`, `data/bursa-macro`; `analysis/bursa-valuation`, `analysis/bursa-technical`, `analysis/bursa-sentiment` |
+| Crypto pack | `data/crypto-fundamentals`, `data/crypto-onchain`, `data/crypto-derivatives`, `data/crypto-macro`; `analysis/crypto-valuation`, `analysis/crypto-technical`, `analysis/crypto-onchain-analysis`, `analysis/crypto-sentiment` |
+| Shared analysis and utilities | `analysis/macro-context`, `analysis/verdict-synthesis`; `utility/report-writer`, `utility/web-search` |
+
+Yellow boxes are orchestrators, green boxes are monitors, blue boxes are data, pink boxes are analysis, and grey boxes are utilities.
 
 ## How it works
 

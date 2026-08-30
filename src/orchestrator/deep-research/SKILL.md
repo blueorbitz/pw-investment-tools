@@ -1,8 +1,7 @@
-# Deep-research orchestrator
-
-## Purpose
-
-Runs the full research pipeline for any ticker across all three markets. Produces a complete polished report covering fundamentals, technicals, sentiment, macro context, and a final verdict with position sizing. This is the "full due diligence" tool for when a ticker has passed the quick-look filter and deserves thorough analysis.
+---
+name: deep-research
+description: Runs the full research pipeline for any ticker across all three markets. Produces a complete report covering fundamentals, technicals, sentiment, macro context, and a final verdict with position sizing.
+---
 
 ## Input
 

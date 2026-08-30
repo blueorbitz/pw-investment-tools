@@ -1,10 +1,7 @@
-# Crypto sentiment analysis
-
-## Purpose
-
-Assesses the sentiment landscape for a crypto token by evaluating social buzz, governance activity, developer engagement, and narrative momentum. Crypto sentiment is noisier than equity sentiment but still provides useful contrarian and momentum signals.
-
-This skill interprets multiple sources. It invokes web search for current sentiment data.
+---
+name: crypto-sentiment
+description: Assesses sentiment for a crypto token by evaluating social buzz, governance activity, developer engagement, and narrative momentum.
+---
 
 ## Input
 

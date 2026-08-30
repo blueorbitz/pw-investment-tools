@@ -1,10 +1,7 @@
-# Bursa technical analysis
-
-## Purpose
-
-Takes the computed indicators from `data/price-history` and produces a technical assessment for Bursa Malaysia equities. Key differences from US technical analysis: weekly charts are preferred (more reliable given lower liquidity), volume confirmation is required for all signals, stages take longer to develop, and stops must be wider to accommodate low-liquidity whipsaws.
-
-This skill interprets. It never fetches raw data itself.
+---
+name: bursa-technical
+description: Produces a technical assessment for Bursa Malaysia equities using weekly charts, volume confirmation, and wider stops to account for lower liquidity.
+---
 
 ## Input
 

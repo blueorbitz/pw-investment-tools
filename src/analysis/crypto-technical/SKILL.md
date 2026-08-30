@@ -1,10 +1,7 @@
-# Crypto technical analysis
-
-## Purpose
-
-Takes the computed indicators from `data/price-history` and derivatives data from `data/crypto-derivatives` to produce a technical assessment for crypto assets. Accounts for crypto-specific factors: 24/7 markets, funding rate context, liquidation zone awareness, BTC correlation, and wider volatility bands.
-
-This skill interprets. It never fetches raw data itself.
+---
+name: crypto-technical
+description: Produces a technical assessment for crypto assets accounting for 24/7 markets, funding rates, liquidation zones, BTC correlation, and wider volatility bands.
+---
 
 ## Input
 

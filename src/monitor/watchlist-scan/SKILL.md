@@ -1,8 +1,7 @@
-# Watchlist scan monitor
-
-## Purpose
-
-Reads the watchlist file, performs lightweight checks on each tracked ticker (price movement, entry condition status, material news, upcoming catalysts), and writes a scan summary. This is a lighter-weight check than portfolio review: the goal is to flag when it's time to enter a position, not to track an existing one.
+---
+name: watchlist-scan
+description: Performs lightweight checks on watchlist tickers for price movement, entry conditions, material news, and upcoming catalysts.
+---
 
 ## Input
 

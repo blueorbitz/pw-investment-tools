@@ -1,10 +1,7 @@
-# Fundamentals data
-
-## Purpose
-
-Fetches financial statement data and key valuation metrics for any ticker. Routes internally by market: US tickers go to Yahoo Finance timeseries API, Bursa tickers (numeric codes or .KL suffix) go to KLSE Screener. Outputs structured financial data to scratch for analysis skills to interpret.
-
-This skill fetches and normalizes. It never interprets or judges the numbers.
+---
+name: fundamentals
+description: Fetches financial statement data and key valuation metrics for any ticker. Routes by market to Yahoo Finance (US) or KLSE Screener (Bursa).
+---
 
 ## Input
 

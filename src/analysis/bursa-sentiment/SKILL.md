@@ -1,10 +1,7 @@
-# Bursa sentiment analysis
-
-## Purpose
-
-Assesses the sentiment landscape for Bursa Malaysia equities by evaluating Bursa filings, insider transaction patterns, news from The Edge and i3investor, and institutional flow signals. The Bursa market has fewer data sources than US, so sentiment analysis relies more on insider behavior and news tone.
-
-This skill interprets. It reads from scratch and may invoke web search for news context.
+---
+name: bursa-sentiment
+description: Assesses sentiment for Bursa Malaysia equities by evaluating filings, insider transaction patterns, news from The Edge and i3investor, and institutional flow signals.
+---
 
 ## Input
 

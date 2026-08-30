@@ -1,8 +1,7 @@
-# Report writer
-
-## Purpose
-
-Handles all output file creation for the investment skills network. Responsible for selecting the correct output path, applying the report template, writing final reports, and writing incremental scratch notes. Every skill that produces output follows this skill's conventions rather than inventing its own paths.
+---
+name: report-writer
+description: Handles all output file creation for the investment skills network. Selects the correct output path, applies the report template, and writes final reports and scratch notes.
+---
 
 ## Base path resolution
 

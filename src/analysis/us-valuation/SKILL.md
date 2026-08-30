@@ -1,10 +1,7 @@
-# US valuation analysis
-
-## Purpose
-
-Takes the structured financial data produced by `data/fundamentals` and produces a valuation judgment for US equities. Determines whether the stock is cheap, fairly valued, or expensive relative to its growth, quality, and sector peers.
-
-This skill interprets. It never fetches raw data itself.
+---
+name: us-valuation
+description: Takes structured financial data from the fundamentals skill and produces a valuation judgment for US equities relative to growth, quality, and sector peers.
+---
 
 ## Input
 

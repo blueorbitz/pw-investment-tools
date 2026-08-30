@@ -1,10 +1,7 @@
-# Crypto fundamentals data
-
-## Purpose
-
-Fetches tokenomics and protocol-level financial data for crypto assets. Covers market cap, fully diluted valuation, supply dynamics, TVL, protocol revenue, and token unlock schedules. This is the crypto equivalent of financial statements for equities.
-
-This skill fetches and structures. It never interprets or judges the data.
+---
+name: crypto-fundamentals
+description: Fetches tokenomics and protocol-level financial data for crypto assets including market cap, FDV, supply dynamics, TVL, protocol revenue, and unlock schedules.
+---
 
 ## Input
 

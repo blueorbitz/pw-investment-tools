@@ -1,8 +1,7 @@
-# US macro data
-
-## Purpose
-
-Fetches current US macroeconomic indicators that form the backdrop for equity and crypto investing. Produces a structured snapshot of monetary policy, inflation, growth, and liquidity conditions. This skill fetches and formats. It never interprets or judges the data.
+---
+name: us-macro
+description: Fetches current US macroeconomic indicators covering monetary policy, inflation, growth, and liquidity conditions. Fetches and formats only, never interprets.
+---
 
 ## Input
 

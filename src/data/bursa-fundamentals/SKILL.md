@@ -1,12 +1,9 @@
-# Bursa fundamentals data (market overview)
+---
+name: bursa-fundamentals
+description: Provides Bursa Malaysia market-level context including top stocks by market cap, sector breakdown, and foreign fund flow direction signals.
+---
 
-## Purpose
-
-Provides Bursa Malaysia market-level context: top stocks by market cap, sector breakdown, and foreign fund flow direction signals. Wraps the existing `bursa_flows.py` script which fetches market overview data from TradingView's Malaysia scanner.
-
-This complements the shared `data/fundamentals` skill (which handles individual stock financials via KLSE Screener). This skill provides the market-wide context that helps with peer comparison and flow analysis.
-
-This skill fetches and structures. It never interprets or judges the data.
+Complements the shared `data/fundamentals` skill (which handles individual stock financials via KLSE Screener). This skill provides market-wide context for peer comparison and flow analysis.
 
 ## Input
 

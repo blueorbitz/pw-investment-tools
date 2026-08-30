@@ -1,10 +1,7 @@
-# Macro context analysis
-
-## Purpose
-
-Synthesizes macro data into a market-level opinion (bullish/bearish/neutral) for the target asset's market. This is a shared skill that routes internally by market: it reads from whichever macro data skill matches the ticker's market (US, Bursa, or Crypto). Produces a concise macro backdrop assessment that the verdict synthesis skill can weigh against stock-specific factors.
-
-This skill interprets macro data. It never fetches raw data itself.
+---
+name: macro-context
+description: Synthesizes macro data into a market-level opinion (bullish/bearish/neutral) for the target asset's market. Routes internally by market type (US, Bursa, or Crypto).
+---
 
 ## Input
 

@@ -1,8 +1,7 @@
-# Portfolio review monitor
-
-## Purpose
-
-Reads the portfolio holdings file, fetches current prices for each position, compares against thesis/targets/stops, calculates P&L, and writes a weekly review summary. Flags positions needing action: stop breaches, targets reached, or thesis invalidated.
+---
+name: portfolio-review
+description: Fetches current prices for portfolio positions, compares against thesis/targets/stops, calculates P&L, and flags positions needing action.
+---
 
 ## Input
 

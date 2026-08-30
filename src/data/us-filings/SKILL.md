@@ -1,10 +1,7 @@
-# US filings data
-
-## Purpose
-
-Fetches SEC filing data for US equities: insider transactions (Form 4), institutional holdings changes (13F), and key highlights from recent 10-K/10-Q filings. Provides the raw signals that the sentiment analysis skill interprets.
-
-This skill fetches and structures. It never interprets or judges the data.
+---
+name: us-filings
+description: Fetches SEC filing data for US equities including insider transactions (Form 4), institutional holdings changes (13F), and recent 10-K/10-Q highlights.
+---
 
 ## Input
 

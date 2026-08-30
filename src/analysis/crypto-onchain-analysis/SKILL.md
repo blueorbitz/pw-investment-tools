@@ -1,10 +1,7 @@
-# Crypto on-chain analysis
-
-## Purpose
-
-Interprets on-chain data from `data/crypto-onchain` into actionable signals: accumulation vs distribution phases, whale behavior patterns, and network health assessment. On-chain analysis is unique to crypto and provides insight into what participants are doing with their actual tokens, not just price action.
-
-This skill interprets. It never fetches raw data itself.
+---
+name: crypto-onchain-analysis
+description: Interprets on-chain data into actionable signals: accumulation vs distribution phases, whale behavior patterns, and network health assessment.
+---
 
 ## Input
 

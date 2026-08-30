@@ -1,8 +1,7 @@
-# Web search
-
-## Purpose
-
-Wraps the agent's web search capability with guidelines for when to search, how to formulate queries, and how to format results. Keeps searches token-conscious by trimming and summarizing rather than dumping raw results.
+---
+name: web-search
+description: Wraps the agent's web search capability with guidelines for when to search, how to formulate queries, and how to format results. Keeps searches token-conscious by trimming and summarizing.
+---
 
 ## When to use
 

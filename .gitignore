@@ -1,0 +1,6 @@
+.kiro
+.vscode
+.notes
+.cache
+.env
+__pycache__

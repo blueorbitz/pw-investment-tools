@@ -1,10 +1,7 @@
-# Crypto on-chain data
-
-## Purpose
-
-Fetches on-chain metrics that reveal what participants are doing with their tokens on the blockchain. Covers exchange flows, whale wallet behavior, active addresses, and staking ratios. This data is unique to crypto and provides signals not available in traditional markets.
-
-This skill fetches and structures. It never interprets or judges the data.
+---
+name: crypto-onchain
+description: Fetches on-chain metrics for crypto assets including exchange flows, whale wallet behavior, active addresses, and staking ratios.
+---
 
 ## Input
 

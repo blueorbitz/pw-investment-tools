@@ -1,10 +1,7 @@
-# Price history data
-
-## Purpose
-
-Fetches OHLCV data and computes technical indicators for any ticker across all three markets. Routes internally via Yahoo Finance: US tickers as-is, Bursa (numeric codes become .KL), crypto (BTC/USD becomes BTC-USD). Outputs computed indicators rather than raw candles to keep token cost low.
-
-This skill fetches and computes. It never interprets or judges the output.
+---
+name: price-history
+description: Fetches OHLCV data and computes technical indicators for any ticker across US, Bursa, and crypto markets via Yahoo Finance.
+---
 
 ## Input
 

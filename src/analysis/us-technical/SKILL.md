@@ -1,10 +1,7 @@
-# US technical analysis
-
-## Purpose
-
-Takes the computed indicators produced by `data/price-history` and produces a technical assessment for US equities. Identifies trend stage, relative strength vs SPY, key support/resistance levels, moving average structure, and suggests entry/exit zones with reasoning.
-
-This skill interprets. It never fetches price data itself.
+---
+name: us-technical
+description: Takes computed indicators from price-history and produces a technical assessment for US equities including trend stage, relative strength, support/resistance, and entry/exit zones.
+---
 
 ## Input
 

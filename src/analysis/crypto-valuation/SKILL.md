@@ -1,10 +1,7 @@
-# Crypto valuation analysis
-
-## Purpose
-
-Takes the structured tokenomics data from `data/crypto-fundamentals` and produces a valuation assessment for crypto tokens. There is no PE ratio in crypto. Instead, this skill evaluates supply dynamics, protocol revenue quality, TVL trends, competitive position, and FDV-relative metrics to determine if a token is cheap, fair, or expensive for its category.
-
-This skill interprets. It never fetches raw data itself.
+---
+name: crypto-valuation
+description: Evaluates crypto token valuation using supply dynamics, protocol revenue, TVL trends, competitive position, and FDV-relative metrics.
+---
 
 ## Input
 

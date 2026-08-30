@@ -1,8 +1,7 @@
-# Verdict synthesis
-
-## Purpose
-
-Reads all analysis scratch outputs for a ticker and produces the final Buy/Sell/Hold verdict. This is the last analysis step before the report is written. It weighs valuation, technical, sentiment, macro, and market-specific factors using market-aware weighting, then outputs a structured verdict with conviction level, target price, timeframe, stop loss, thesis, and position sizing guidance.
+---
+name: verdict-synthesis
+description: Reads all analysis outputs for a ticker and produces the final Buy/Sell/Hold verdict with conviction level, target price, stop loss, thesis, and position sizing.
+---
 
 The output structure is universal across all markets. The weighting of inputs varies by market.
 

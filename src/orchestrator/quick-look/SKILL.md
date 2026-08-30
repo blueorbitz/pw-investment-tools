@@ -1,8 +1,7 @@
-# Quick-look orchestrator
-
-## Purpose
-
-Ties together the fast-filter pipeline end-to-end. Given a ticker, it determines market type, fetches core data, runs analysis, synthesizes a verdict, and produces a quick-look report. This is the "two-minute decision" tool: enough data to decide whether a ticker deserves deeper research.
+---
+name: quick-look
+description: Ties together the fast-filter pipeline. Given a ticker, determines market type, fetches data, runs analysis, and produces a quick-look report.
+---
 
 Quick-look is deliberately lean. It skips sentiment, macro context, and deep valuation work in favor of speed. The output gives you a verdict, key fundamentals, and a technical picture.
 

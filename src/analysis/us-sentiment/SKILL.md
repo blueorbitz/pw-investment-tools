@@ -1,10 +1,7 @@
-# US sentiment analysis
-
-## Purpose
-
-Takes the filing data from `data/us-filings` plus web search results and produces a sentiment assessment for US equities. Synthesizes insider behavior, institutional positioning, analyst revisions, options flow, and news tone into a net sentiment signal.
-
-This skill interprets multiple data sources. It reads from scratch and invokes web search for analyst/news context.
+---
+name: us-sentiment
+description: Takes filing data and web search results to produce a sentiment assessment for US equities covering insider behavior, institutional positioning, analyst revisions, and news tone.
+---
 
 ## Input
 

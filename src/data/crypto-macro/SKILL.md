@@ -1,10 +1,7 @@
-# Crypto macro data
-
-## Purpose
-
-Fetches macro indicators that drive the crypto market as a whole: dollar strength, stablecoin supply growth, BTC ETF flows, and Fed net liquidity. Crypto is a high-beta liquidity play, so these macro factors often matter more than individual token fundamentals.
-
-This skill fetches and structures. It never interprets or judges the data.
+---
+name: crypto-macro
+description: Fetches macro indicators that drive the crypto market including dollar strength, stablecoin supply growth, BTC ETF flows, and Fed net liquidity.
+---
 
 ## Input
 

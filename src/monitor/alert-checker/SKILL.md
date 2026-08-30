@@ -1,8 +1,7 @@
-# Alert checker monitor
-
-## Purpose
-
-Reads holdings.yaml, finds positions with custom `alert_conditions`, evaluates each condition against current market data, and writes output only when conditions are breached. This is the most targeted monitor: it checks specific rules you've set and fires only when something needs your attention.
+---
+name: alert-checker
+description: Reads holdings.yaml, evaluates custom alert conditions against current market data, and writes output only when conditions are breached.
+---
 
 When no conditions are breached, this skill writes nothing (silent success).
 

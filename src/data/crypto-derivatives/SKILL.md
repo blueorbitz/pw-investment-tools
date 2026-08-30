@@ -1,10 +1,7 @@
-# Crypto derivatives data
-
-## Purpose
-
-Fetches derivatives market data for crypto assets: perpetual funding rates, open interest, and liquidation levels. These reveal leveraged positioning and can signal crowded trades, potential squeezes, or imminent volatility.
-
-This skill fetches and structures. It never interprets or judges the data.
+---
+name: crypto-derivatives
+description: Fetches derivatives market data for crypto assets including perpetual funding rates, open interest, and liquidation levels.
+---
 
 ## Input
 
