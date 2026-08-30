@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Shared Yahoo Finance fetcher with local file cache.
 
-Cache location: ~/.cache/ta_skills/<ticker>_<interval>_<period>.json
+Cache location: $ISK_CACHE/<ticker>_<interval>_<period>.json
+Cache default: ~/.cache when ISK_CACHE is unset.
 Cache TTL: same calendar trading day (invalidates after market close or next day).
 
 Usage:
@@ -16,7 +17,9 @@ import urllib.request
 from datetime import datetime, timezone, timedelta
 
 
-CACHE_DIR = os.path.expanduser("~/.cache/ta_skills")
+CACHE_DIR = os.path.expanduser(
+    os.environ.get("ISK_CACHE", "~/.cache")
+)
 # MYT = UTC+8, Bursa closes at 17:00 MYT. Use 17:30 as safe cutoff.
 MYT = timezone(timedelta(hours=8))
 

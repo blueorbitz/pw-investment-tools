@@ -134,6 +134,7 @@ Only `ISK_ROOT` and `ISK_NOTES` affect the core workflow. The API keys unlock sp
 ```bash
 export ISK_ROOT="/path/to/investment-skills/src"
 export ISK_NOTES="$HOME/notes"             # default, change if you want output elsewhere
+export ISK_CACHE="$HOME/.cache"            # default, change if you want output elsewhere
 export FRED_API_KEY="your-key-here"        # optional
 ```
 
@@ -142,6 +143,7 @@ export FRED_API_KEY="your-key-here"        # optional
 ```powershell
 $env:ISK_ROOT = "C:\path\to\investment-skills\src"
 $env:ISK_NOTES = "$env:USERPROFILE\notes"  # default, change if you want output elsewhere
+$env:ISK_CACHE = "$env:USERPROFILE\.cache"  # default, change if you want output elsewhere
 $env:FRED_API_KEY = "your-key-here"        # optional
 ```
 

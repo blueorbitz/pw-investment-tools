@@ -84,7 +84,7 @@ market: US | Bursa | Crypto
 ## Data sources
 
 - **Primary:** Yahoo Finance via `yahoo_cache.py` (shared cache layer)
-- **Cache:** Local file cache at `~/.cache/ta_skills/`, invalidates daily after market close
+- **Cache:** Local file cache at `$ISK_CACHE/`, defaulting to `~/.cache/` when `ISK_CACHE` is unset. It invalidates daily after market close.
 - **Ticker normalization:** handled by `yahoo_cache.py` (`_normalize_ticker` function)
 
 ## Scripts
