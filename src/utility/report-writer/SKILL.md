@@ -44,6 +44,7 @@ Market: US | Bursa | Crypto
 
 Action: Buy | Sell | Hold
 Conviction: High | Medium | Low
+Current Price: $XX.XX
 Target Price: $XX.XX
 Timeframe: X months
 Stop Loss: $XX.XX
@@ -89,6 +90,7 @@ The verdict block is a fixed key-value structure at the top of every report for 
 ```
 Action: Buy | Sell | Hold
 Conviction: High | Medium | Low
+Current Price: $XX.XX (or token-denominated for crypto)
 Target Price: $XX.XX (or token-denominated for crypto)
 Timeframe: X weeks | X months | X years
 Stop Loss: $XX.XX

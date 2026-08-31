@@ -18,8 +18,10 @@ Usage:
 import os
 import json
 import urllib.request
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
+
+MYT = timezone(timedelta(hours=8))
 
 CACHE_DIR = os.path.expanduser(
     os.environ.get("ISK_CACHE", "~/.cache")
