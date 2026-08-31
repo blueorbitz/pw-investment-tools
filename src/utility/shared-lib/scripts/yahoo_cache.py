@@ -3,7 +3,11 @@
 
 Cache location: $ISK_CACHE/<ticker>_<interval>_<period>.json
 Cache default: ~/.cache when ISK_CACHE is unset.
-Cache TTL: same calendar trading day (invalidates after market close or next day).
+Cache TTL: same local calendar day. A uniform daily TTL is used for all markets
+(US, Bursa, crypto). This is intentional: the network targets daily-granularity
+research, not intraday day-trading, so a single calendar-day rule is correct and
+simple. Set ISK_CACHE_TTL_HOURS to override with a fixed-hours TTL instead
+(useful for 24/7 crypto if you want fresher intraday data).
 
 Usage:
     from yahoo_cache import fetch_yahoo_cached
@@ -14,14 +18,12 @@ Usage:
 import os
 import json
 import urllib.request
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta
 
 
 CACHE_DIR = os.path.expanduser(
     os.environ.get("ISK_CACHE", "~/.cache")
 )
-# MYT = UTC+8, Bursa closes at 17:00 MYT. Use 17:30 as safe cutoff.
-MYT = timezone(timedelta(hours=8))
 
 
 def _cache_key(ticker, interval, period):
@@ -30,24 +32,32 @@ def _cache_key(ticker, interval, period):
 
 
 def _is_cache_valid(cache_path):
-    """Cache is valid if written today (MYT) and market hasn't closed since."""
+    """Uniform daily TTL for all markets.
+
+    Valid if the cache file was written on the current local calendar day. If
+    ISK_CACHE_TTL_HOURS is set, a fixed rolling-hours TTL is used instead of the
+    calendar-day rule (e.g. set it to 4 for fresher 24/7 crypto data).
+
+    No per-market close-time logic: the old Bursa-specific 17:30 MYT cutoff was
+    applied to every market, which miscomputed freshness for US and had no meaning
+    for 24/7 crypto. Daily granularity is sufficient for this network's use case.
+    """
     if not os.path.exists(cache_path):
         return False
 
     mtime = os.path.getmtime(cache_path)
-    cached_dt = datetime.fromtimestamp(mtime, tz=MYT)
-    now = datetime.now(tz=MYT)
+    cached_dt = datetime.fromtimestamp(mtime)
+    now = datetime.now()
 
-    # Same calendar day in MYT
-    if cached_dt.date() != now.date():
-        return False
+    ttl_hours = os.environ.get("ISK_CACHE_TTL_HOURS")
+    if ttl_hours:
+        try:
+            return (now - cached_dt) < timedelta(hours=float(ttl_hours))
+        except ValueError:
+            pass  # fall through to calendar-day rule on a bad value
 
-    # If cached before market close (17:30) and now is after, invalidate
-    market_close = now.replace(hour=17, minute=30, second=0, microsecond=0)
-    if cached_dt < market_close and now >= market_close:
-        return False
-
-    return True
+    # Default: valid only if written on the same local calendar day.
+    return cached_dt.date() == now.date()
 
 
 def _normalize_ticker(ticker):

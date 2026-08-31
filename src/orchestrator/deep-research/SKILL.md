@@ -32,6 +32,18 @@ Fetch ALL data skills for the detected market simultaneously:
 
 All data skills write to the same scratch directory. Wait for all to complete (or timeout at 60 seconds per skill) before proceeding.
 
+**Reuse same-day scratch (cost discipline).** If a `quick-look` (or an earlier
+deep-research) already ran for this ticker today, its scratch for shared factors
+(fundamentals, price-history) is present and current — the daily cache in
+`yahoo_cache.py` covers the underlying data. Reuse those scratch files instead of
+re-fetching, and spend the run only on the factors deep-research adds
+(macro, sentiment, on-chain/derivatives, filings). Re-fetch only if the existing
+scratch is `status: partial`/`unavailable` or you have reason to believe it is stale.
+
+**On timeout or failure of a data skill:** mark that factor `unavailable`, continue,
+and let verdict-synthesis redistribute weight and cap conviction. Do not retry by
+default — a retry that also times out just burns cost. Name the gap in the report.
+
 ### Step 3: Analysis (parallel, respecting data dependencies)
 
 Run ALL analysis skills for the detected market simultaneously. Each analysis skill reads the scratch it needs (written in step 2):
@@ -48,14 +60,30 @@ Run `analysis/verdict-synthesis`. Reads all analysis scratch and produces the fi
 
 ### Step 5: Report assembly (sequential)
 
-Use `utility/report-writer` conventions to assemble the full report with ALL template sections:
+Deep-research **gathers broadly but reports tightly**. Steps 2-3 fetch the full
+factor set for good coverage, but the final report must be balanced depth, not a data
+dump. Length and noise are failures, not thoroughness. The compression rule:
+
+- **Every factor keeps its signal.** Each analysis factor appears in the verdict's
+  factor-summary table with its strength label and one-line rationale. Nothing that
+  feeds the decision is dropped.
+- **Prose is compressed, not the logic.** Each narrative section (Fundamentals,
+  Technical, Sentiment, Macro) is a tight few-paragraph summary of its scratch, not a
+  transcript. Lead with the conclusion, then the two or three facts that support it.
+- **Push raw evidence down or out.** Full tables, long metric dumps, and every
+  citation belong in the scratch files (already preserved) — reference them, don't
+  inline them all. Include a citation only where it backs a load-bearing claim.
+- **Target length.** Aim for a report a reader can absorb in a few minutes. If a
+  section runs long without changing the verdict, cut it.
+
+Use `utility/report-writer` conventions to assemble the report with these sections:
 
 1. **Verdict** - from verdict-synthesis scratch
 2. **Thesis** - expanded reasoning from verdict-synthesis
-3. **Fundamentals** - from valuation analysis scratch
-4. **Technical setup** - from technical analysis scratch
-5. **Sentiment and news** - from sentiment analysis scratch
-6. **Macro context** - from macro-context scratch
+3. **Fundamentals** - compressed summary from valuation analysis scratch
+4. **Technical setup** - compressed summary from technical analysis scratch
+5. **Sentiment and news** - compressed summary from sentiment analysis scratch
+6. **Macro context** - compressed summary from macro-context scratch
 7. **Risks** - synthesized from all analysis (each skill notes risks)
 8. **Position sizing** - from verdict-synthesis
 

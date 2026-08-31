@@ -33,7 +33,7 @@ A library of composable Kiro skills organized by concern (data fetching, analysi
 21. As an investor, I want multi-account support in holdings.yaml so positions across different brokers stay organized.
 22. As an investor, I want the orchestrator to continue with partial data and note gaps in the report when an API fails, rather than aborting entirely.
 23. As an investor, I want a web-search utility skill that analysis skills call when structured data raises follow-up questions.
-24. As an investor, I want monitoring triggered by external cron calling a helper script, not embedded scheduling logic, so I control frequency.
+24. As an investor, I want monitoring triggered by my scheduler / agent harness invoking the monitor skill directly, not by embedded scheduling logic or a wrapper script, so I control frequency and stay harness-agnostic.
 
 ## Implementation decisions
 
@@ -80,7 +80,7 @@ A library of composable Kiro skills organized by concern (data fetching, analysi
 ### Monitoring
 
 - Portfolio review and watchlist scan default to weekly. Crypto can be more frequent. Frequency is configurable in the skill, not hardcoded.
-- External cron/timer calls the agent with the monitor skill. Helper scripts in `src/monitor/<skill>/scripts/` serve as cron targets.
+- The scheduler / agent harness (e.g. Hermes cron) triggers the monitor skill directly. No wrapper script: the skill runs its own precondition checks (input file present, anything to check) as step 1, then writes output. Set `ISK_NOTES` in the harness environment.
 
 ### Error handling
 

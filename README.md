@@ -225,20 +225,15 @@ The system auto-detects market from ticker format:
 
 ## Monitoring setup
 
-Monitors are triggered by external cron or Task Scheduler. Each has a cross-platform Python helper script:
+Monitors are triggered by your scheduler / agent harness (e.g. a Hermes cron entry) calling the monitor skill directly. There is no wrapper script: the scheduler invokes the skill, and the skill does its own precondition checks (does the holdings/watchlist file exist, is there anything to check) as its first step, then writes output.
 
-```bash
-# Weekly portfolio review (Sunday 9 AM)
-0 9 * * 0 python3 /path/to/src/monitor/portfolio-review/scripts/run_review.py
+Configure schedules in your harness. Suggested cadence:
 
-# Weekly watchlist scan (Sunday 10 AM)
-0 10 * * 0 python3 /path/to/src/monitor/watchlist-scan/scripts/run_scan.py
+- Portfolio review — weekly (e.g. Sunday morning); more often if crypto-heavy.
+- Watchlist scan — daily to weekly.
+- Alert check — daily (pre-market for equities), every 4-6 hours for crypto positions.
 
-# Daily alert check (8 AM, or every 4h for crypto)
-0 8 * * * python3 /path/to/src/monitor/alert-checker/scripts/run_alerts.py
-```
-
-The scripts validate your environment, ensure output directories exist, and print the command to invoke the agent. They use `ISK_NOTES` to find holdings/watchlist files and write output.
+Set `ISK_NOTES` in the harness environment so the skills resolve the right base path for holdings/watchlist files and output.
 
 ## Portfolio and watchlist files
 
@@ -281,5 +276,5 @@ tickers:
 - **Partial data is OK.** If an API fails, the pipeline continues. Reports note their gaps.
 - **Market-specific weighting.** Verdict synthesis weighs factors differently per market: dividend yield matters more for Bursa, on-chain matters more for crypto.
 - **Scratch for traceability.** Every sub-skill writes intermediate output. You can trace how the verdict was reached.
-- **No embedded scheduling.** Monitors don't implement cron. External schedulers call helper scripts. You control frequency.
+- **No embedded scheduling.** Monitors don't implement cron. Your scheduler / agent harness triggers the monitor skill directly. You control frequency.
 - **Cross-platform.** All scripts are Python. Works on Linux, macOS, and Windows without modification.

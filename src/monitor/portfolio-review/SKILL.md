@@ -137,6 +137,14 @@ Accounts: ibkr, mplus, binance
 
 `$ISK_NOTES/portfolio/reviews/YYYY-MM/YYYY-MM-DD-portfolio-review.md`
 
+## Scheduling
+
+Triggered directly by a scheduler / agent harness (e.g. a Hermes cron entry
+configured to run the `monitor/portfolio-review` skill). There is no wrapper script:
+the scheduler invokes the skill, and step 1 of the pipeline reads `holdings.yaml` and
+handles the missing-file case. A weekly cadence suits most portfolios; run more often
+if crypto-heavy. Configure the schedule in your harness, not here.
+
 ## Error handling
 
 - If `holdings.yaml` does not exist, create a template file and instruct the user to populate it.

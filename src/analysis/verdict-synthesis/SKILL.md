@@ -31,6 +31,12 @@ status: complete | partial
 market: US | Bursa | Crypto
 inputs_available: [us-valuation, us-technical, macro-context, us-sentiment]
 inputs_missing: []
+regime:
+  risk: risk-on | neutral | risk-off
+  volatility: high-vol | normal
+  driver: macro-driven | stock-driven
+weights_applied: { valuation: 30, technical: 30, macro: 20, sentiment: 20 }
+weights_baseline: { valuation: 30, technical: 30, macro: 20, sentiment: 20 }
 ---
 
 ## Verdict
@@ -48,15 +54,28 @@ Thesis: <one sentence capturing the core reason>
 
 ## Factor summary
 
-| Factor | Signal | Weight | Contribution |
-|--------|--------|--------|--------------|
-| Valuation | cheap / fair / expensive | XX% | bullish / bearish / neutral |
-| Technical | bullish / bearish / neutral | XX% | bullish / bearish / neutral |
-| Macro | bullish / bearish / neutral | XX% | bullish / bearish / neutral |
-| Sentiment | bullish / bearish / neutral | XX% | bullish / bearish / neutral |
-| On-chain (crypto only) | accumulation / distribution | XX% | bullish / bearish / neutral |
+Each factor carries a **strength label**, not just a direction. Use the labels
+below (they map to an internal -2..+2 score used only for the composite math —
+never print the numbers, always print the words):
+
+| Label | Internal score | Meaning |
+|-------|:--:|---------|
+| Strong bullish | +2 | Signal is at an extreme in your favor (e.g. >30% below fair value, breakout on 5x+ volume, heavy insider cluster-buying) |
+| Mild bullish | +1 | Modestly favorable |
+| Neutral | 0 | Fair / no clear tilt |
+| Mild bearish | -1 | Modestly unfavorable |
+| Strong bearish | -2 | Signal is at an extreme against (e.g. >30% above fair value, stretched, distribution) |
+
+| Factor | Signal | Strength | Weight | Contribution |
+|--------|--------|----------|--------|--------------|
+| Valuation | cheap / fair / expensive | strong/mild bullish · neutral · mild/strong bearish | XX% | bullish / bearish / neutral |
+| Technical | bullish / bearish / neutral | strong/mild bullish · neutral · mild/strong bearish | XX% | bullish / bearish / neutral |
+| Macro | bullish / bearish / neutral | strong/mild bullish · neutral · mild/strong bearish | XX% | bullish / bearish / neutral |
+| Sentiment | bullish / bearish / neutral | strong/mild bullish · neutral · mild/strong bearish | XX% | bullish / bearish / neutral |
+| On-chain (crypto only) | accumulation / distribution | strong/mild bullish · neutral · mild/strong bearish | XX% | bullish / bearish / neutral |
 
 Net signal: X bullish, Y bearish, Z neutral
+Composite score: <weighted sum of factor scores, e.g. +1.35> (label: <e.g. strong bullish>)
 
 ## Target price rationale
 
@@ -93,6 +112,12 @@ Note: This is an assessment framework, not financial advice. Position sizing dep
 ```
 
 ## Weighting framework
+
+The per-market tables below are the **regime-neutral baseline**. They encode durable
+market-structure priors (Bursa's income-investor culture, crypto's liquidity
+sensitivity) and stay human-editable. On top of the baseline, apply a **bounded
+regime multiplier** (see "Regime-adaptive weighting") so the verdict reflects the
+current market environment rather than a fixed rulebook. Baseline first, then adjust.
 
 ### US equities (default weights)
 
@@ -133,23 +158,120 @@ Crypto-specific adjustments:
 - Token unlock within 30 days automatically lowers conviction by one level.
 - BTC dominance rising = prefer BTC over alts.
 
+## Regime-adaptive weighting
+
+The baseline weights are a starting point, not the final word. The macro-context
+scratch already produces a market-level read; use it to classify the current
+**regime** and shift weight toward whichever factor matters most right now. This
+trades a little reproducibility for adaptiveness — which is acceptable because every
+run logs its regime signal and resulting weights, so any verdict stays explainable
+after the fact.
+
+### Step 1: Classify the regime
+
+Read the macro-context scratch (and technical scratch for volatility) and pick one
+label per axis. If macro-context is missing, use regime `neutral` and note it in
+Gaps.
+
+| Axis | Labels | Signal source |
+|------|--------|---------------|
+| Risk | risk-on / neutral / risk-off | macro-context stance (liquidity, rates, breadth) |
+| Volatility | high-vol / normal | technical scratch (ATR/Bollinger width, ADX) |
+| Driver | macro-driven / stock-driven | is the asset moving with its market or on its own catalysts |
+
+### Step 2: Apply bounded multipliers
+
+Adjust the baseline weights per the regime, then renormalize so weights sum to 100%.
+**No single factor's weight may move more than ±10 percentage points from its
+baseline** (the bound that keeps the system stable and auditable).
+
+| Regime condition | Weight shift | Rationale |
+|------------------|-------------|-----------|
+| macro-driven | +up to 10pp to Macro, taken proportionally from the rest | when the market drives the asset, macro dominates |
+| stock-driven | +up to 10pp to Valuation (equities) / On-chain (crypto) | idiosyncratic moves reward bottom-up factors |
+| high-vol | +up to 10pp to Technical, -from Sentiment | in volatile tape, price structure leads, mood is noise |
+| risk-off | +up to 5pp to Macro, cap conviction more readily | downside regimes punish ignoring the backdrop |
+| risk-on + confirmed trend | +up to 5pp to Technical | momentum is more trustworthy in risk-on |
+
+Multiple conditions can stack, but the ±10pp per-factor bound is absolute after
+stacking. Sentiment is never raised by a regime shift (it is the noisiest input).
+
+### Step 3: Log the applied weights
+
+The verdict scratch MUST record the regime and the actual weights used, so the run
+is reproducible-in-spirit even though weights vary. Add these to the YAML header and
+show the adjusted weights in the factor summary table's Weight column.
+
+```yaml
+regime:
+  risk: risk-on | neutral | risk-off
+  volatility: high-vol | normal
+  driver: macro-driven | stock-driven
+weights_applied: { valuation: XX, technical: XX, macro: XX, sentiment: XX }
+weights_baseline: { valuation: XX, technical: XX, macro: XX, sentiment: XX }
+```
+
+If the regime signal is weak or macro-context is unavailable, default to the baseline
+weights, set `regime` fields to `neutral`/`unknown`, and say so in Gaps. Never let an
+uncertain regime read swing weights — bounded and logged, or not at all.
+
 ## Conviction level rules
 
-**High conviction** (all must be true):
-- At least 3 factors align in the same direction
-- No major factor is strongly contradictory
+Conviction is gated on **signal magnitude**, not just how many factors agree. This
+keeps most verdicts appropriately conservative while ensuring that a genuinely
+strong signal produces a decisive, credible call. A wall of "mild bullish" factors
+is NOT the same as a cluster of "strong bullish" factors, and the two must not
+resolve to the same conviction.
+
+First compute the **composite score**: the weighted sum of each factor's internal
+score (-2..+2) using the market weights above. Then apply:
+
+**High conviction** (decisive Buy/Sell — all must be true):
+- Composite score magnitude is large: `|composite| >= HIGH_THRESHOLD` (default **1.2**)
+- At least 3 factors point the same direction as the composite
+- No factor sits at the opposite extreme (no "strong bearish" against a Buy, or "strong bullish" against a Sell)
 - Data quality is good (most inputs available, status: complete)
 
 **Medium conviction** (typical case):
-- 2 factors align, others neutral or missing
-- One factor may mildly disagree
-- Some data gaps but core thesis is supported
+- Composite magnitude is moderate: `0.5 <= |composite| < HIGH_THRESHOLD`, OR
+- Strong direction but one factor mildly contradicts, OR
+- Core thesis supported but some data gaps
 
 **Low conviction** (any of these):
-- Factors are split (bullish valuation but bearish technical, or vice versa)
+- Composite magnitude is small: `|composite| < 0.5` (mild-everything → resolves toward Hold)
+- Factors are genuinely split (strong bullish valuation vs strong bearish technical)
 - Key data is missing (only 1 analysis available)
 - Macro headwinds contradict stock-level signals
 - High uncertainty in the market regime
+
+### Single-factor conviction override
+
+A single dominant factor at **strong bullish** or **strong bearish**, backed by
+good data quality, may escalate conviction by one level even when other factors are
+neutral. This is the "one thing is screamingly obvious" case (deep undervaluation,
+confirmed breakout on huge volume, whale cluster-accumulation). It prevents a lone
+mild blemish elsewhere from muzzling a real standout.
+
+Override eligibility is restricted to high signal-to-noise factors:
+- **Equities (US/Bursa):** valuation extremes, and technical breakouts *with volume confirmation*.
+- **Crypto:** on-chain whale accumulation/distribution, and derivatives extremes.
+- **Sentiment may NEVER escalate on its own** — it is the noisiest input and is only ever corroborating.
+
+The override can lift Low→Medium or Medium→High, but the "no opposite extreme" and
+data-quality requirements for High still apply. It cannot manufacture a High
+conviction verdict when a strong contradicting factor exists.
+
+### Tunable knobs
+
+These two encode risk appetite and should be set deliberately:
+- `HIGH_THRESHOLD` (default **1.2** on the -2..+2 scale): lower → more decisive calls, more false-strong risk; higher → rarer, higher-quality strong calls.
+- **Override-eligible factors**: which single factors may escalate alone (list above). Sentiment is deliberately excluded.
+
+### Worked examples
+
+- **Mild-everything ticker:** valuation mild bullish (+1), technical mild bullish (+1), macro neutral (0), sentiment mild bullish (+1). US weights → composite ≈ +0.7. Below 1.2 → **Medium** (or a modest Buy at Medium). Correctly NOT a strong call.
+- **Deep-value + breakout ticker:** valuation strong bullish (+2), technical strong bullish (+2, volume-confirmed), macro neutral (0), sentiment mild bullish (+1). US weights → composite ≈ +1.4, three aligned, no opposite extreme → **High**. This is the clear signal that should punch through.
+- **Standout single factor:** valuation strong bullish (+2), everything else neutral. Composite ≈ +0.6 → normally Medium, but valuation is override-eligible → escalate to **High** provided data quality is good and nothing sits at the opposite extreme.
 
 ## Handling partial inputs
 
@@ -170,7 +292,7 @@ Always note missing inputs in the "Gaps and caveats" section.
 
 - If no analysis scratch files exist for the ticker, write `status: unavailable` with reason "no analysis data found."
 - If all available analyses are themselves `unavailable`, produce a Hold verdict with Low conviction and explain why.
-- Never produce a High conviction verdict when any critical factor contradicts the thesis. Acknowledge the disagreement and cap at Medium.
+- Never produce a High conviction verdict when a factor sits at the *opposite extreme* (strong bearish against a Buy, or strong bullish against a Sell). Acknowledge the disagreement and cap at Medium. A merely *mild* contradiction does not block High on its own — magnitude and the composite score decide (see Conviction level rules).
 
 ## Dependencies
 

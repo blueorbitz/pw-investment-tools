@@ -141,11 +141,18 @@ Only written when at least one alert fires. If nothing fires, no file is created
 
 When no conditions are breached:
 - No file is written
-- The helper script exits with code 0
 - This is the expected outcome most days
 - The absence of an alert file means "all conditions OK"
 
-## Scheduling guidance
+The first pipeline step is a deterministic precondition check: if `holdings.yaml`
+is missing or has no `alert_conditions`, stop immediately and write nothing.
+
+## Scheduling
+
+This skill is meant to be triggered directly by a scheduler / agent harness (e.g. a
+Hermes cron entry configured to run the `monitor/alert-checker` skill). There is no
+wrapper script — the scheduler invokes the skill, and the skill does its own
+precondition checks as step 1. Configure the schedule in your harness, not here.
 
 | Market focus | Suggested frequency | Rationale |
 |--------------|--------------------|-----------| 

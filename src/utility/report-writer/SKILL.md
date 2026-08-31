@@ -15,7 +15,7 @@ Throughout all SKILL.md files, `$ISK_NOTES` refers to this resolved base path. I
 
 **When running interactively:** The agent inherits env vars from your shell. Set `ISK_NOTES` in your shell profile or terminal before starting Kiro.
 
-**When running via cron/scheduler:** The helper scripts in `monitor/*/scripts/` read `ISK_NOTES` directly. Set it in your crontab environment or in the scheduler's environment variables panel.
+**When running via cron/scheduler:** The scheduler / agent harness (e.g. Hermes cron) triggers a `monitor/*` skill directly. The skill resolves paths via these conventions and writes its output. There is no wrapper script. Make sure `ISK_NOTES` is set in the harness's environment so the skill resolves the right base path.
 
 **When no env var is set:** Everything defaults to `~/notes`. This works out of the box with no configuration.
 

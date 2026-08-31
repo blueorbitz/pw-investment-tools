@@ -150,6 +150,14 @@ Common condition patterns and how to evaluate:
 
 For complex conditions, use best judgment and explain the assessment.
 
+## Scheduling
+
+Triggered directly by a scheduler / agent harness (e.g. a Hermes cron entry
+configured to run the `monitor/watchlist-scan` skill). There is no wrapper script:
+the scheduler invokes the skill, and step 1 of the pipeline reads `watchlist.yaml`
+and handles the missing-file case. A daily-to-weekly cadence suits most watchlists.
+Configure the schedule in your harness, not here.
+
 ## Error handling
 
 - If `watchlist.yaml` does not exist, create a template file and instruct the user to populate it.
