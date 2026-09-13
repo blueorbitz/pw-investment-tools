@@ -1,16 +1,28 @@
 #!/usr/bin/env python3
-"""Data retrieval layer for dividend model.
+"""Data retrieval layer for dividend history.
 
 Fetches historical dividend per share data from:
-- Yahoo Finance timeseries API (global stocks)
-- KLSE Screener (Bursa Malaysia stocks)
+- Yahoo Finance chart API with dividend events (global stocks)
+- KLSE Screener #dividends section (Bursa Malaysia stocks)
 
-Returns standardized annual DPS data consumed by dividend_model.py.
+Consumed by the data/fundamentals skill; output lands in the fundamentals.md
+scratch file for quick-look, deep-research, and the quality gate.
 """
 
 import json
+import os
 import re
+import sys
 import urllib.request
+
+# ISK_ROOT points at src/. A relative ISK_ROOT is ignored for import purposes
+# (CWD-dependent); __file__-relative resolution is used instead.
+_ROOT = os.environ.get("ISK_ROOT")
+if not _ROOT or not os.path.isabs(_ROOT):
+    _ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+sys.path.insert(0, os.path.join(_ROOT, "utility", "shared-lib", "scripts"))
+
+from yahoo_cache import isk_paths  # noqa: E402
 
 
 UA = (
@@ -129,8 +141,9 @@ def fetch_yahoo_dividends(ticker):
 def fetch_klse_dividends(stock_code):
     """Fetch dividend history from KLSE Screener.
 
-    Scrapes the dividend tab of klsescreener.com/v2/stocks/view/<code>
-    for historical DPS data.
+    Scrapes the #dividends section of klsescreener.com/v2/stocks/view/<code>:
+    a plain table with Announced / Financial Year / Subject / EX Date /
+    Payment Date / Amount columns. Amount is already in RM (0.3100 = 31 sen).
 
     Returns list of {"date": "YYYY", "value": float} sorted oldest-first,
     or None on failure.
@@ -147,79 +160,44 @@ def fetch_klse_dividends(stock_code):
     if "Page Not Found" in html or "404" in html[:500]:
         return None
 
-    # Look for dividend table — KLSE Screener has a dividends section
-    # Pattern: rows with ex-date, amount, type columns
-    # Try the dividend_reports table first
-    div_table = re.search(
-        r"<table[^>]*class=['\"]?dividend[^'\"]*['\"]?[^>]*>(.*?)</table>",
-        html, re.DOTALL | re.IGNORECASE
+    # The dividend history lives in the section with id="dividends"
+    div_section = re.search(
+        r'id="dividends".*?<table[^>]*>(.*?)</table>', html, re.DOTALL
     )
-
-    if not div_table:
-        # Alternative: look for "Dividend" section by header
-        div_section = re.search(
-            r"(?:Dividend|DPS).*?<table[^>]*>(.*?)</table>",
-            html, re.DOTALL | re.IGNORECASE
-        )
-        if div_section:
-            div_table = div_section
-
-    if not div_table:
-        # Fallback: try to find dividend data in any table with "Ex-Date" header
-        tables = re.findall(r"<table[^>]*>(.*?)</table>", html, re.DOTALL)
-        for table in tables:
-            if re.search(r"Ex[\s-]*Date", table, re.IGNORECASE):
-                div_table = type('obj', (object,), {'group': lambda self, x=None: table})()
-                break
-
-    if not div_table:
+    if not div_section:
         return None
 
-    table_html = div_table.group(1) if hasattr(div_table, 'group') else div_table.group(0)
-
-    # Parse rows — look for date and amount patterns
+    table_html = div_section.group(1)
     rows = re.findall(r"<tr[^>]*>(.*?)</tr>", table_html, re.DOTALL)
     dividends_by_year = {}
 
     for row in rows:
         cells = re.findall(r"<td[^>]*>(.*?)</td>", row, re.DOTALL)
-        if len(cells) < 2:
+        if len(cells) < 6:
             continue
 
-        # Clean cell text
-        texts = [re.sub(r'<[^>]+>', '', c).strip() for c in cells]
+        texts = [re.sub(r"<[^>]+>", "", c).strip() for c in cells]
+        announced, fy = texts[0], texts[1]
+        # Amount is the "number" column (index 5); already in RM
+        amount_match = re.match(r"^(\d+\.?\d*)$", texts[5])
 
-        # Find a date cell (YYYY-MM-DD or DD/MM/YYYY or DD-Mon-YYYY)
-        year = None
-        amount = None
+        date_source = fy or announced
+        year_match = re.search(r"(19\d\d|20\d\d)", date_source)
+        if not year_match or not amount_match:
+            continue
 
-        for text in texts:
-            # Try to extract year from date
-            year_match = re.search(r'(20[0-2]\d|19\d\d)', text)
-            if year_match and not year:
-                year = int(year_match.group(1))
-
-            # Try to extract amount (e.g., "0.15", "15.0 sen", "3.5%")
-            amt_match = re.search(r'(\d+\.?\d*)\s*(?:sen|cents?)?', text, re.IGNORECASE)
-            if amt_match and not amount:
-                val = float(amt_match.group(1))
-                # KLSE often reports in sen (1/100 of RM)
-                if "sen" in text.lower() or val > 5:  # Likely in sen if > 5
-                    val = val / 100.0
-                if 0 < val < 50:  # Reasonable DPS range
-                    amount = val
-
-        if year and amount:
-            if year not in dividends_by_year:
-                dividends_by_year[year] = 0.0
-            dividends_by_year[year] += amount
+        year = int(year_match.group(1))
+        amount = float(amount_match.group(1))
+        if year > 0 and 0 < amount < 50:
+            dividends_by_year[year] = dividends_by_year.get(year, 0.0) + amount
 
     if not dividends_by_year:
         return None
 
     # Sort and return — exclude potentially partial current year
     from datetime import datetime
-    current_year = datetime.utcnow().year
+
+    current_year = datetime.now().year
 
     annual_dps = []
     for year in sorted(dividends_by_year.keys()):
@@ -256,3 +234,31 @@ def fetch_dividend_history(ticker):
     if result:
         return {"dps_annual": result}
     return None
+
+
+def main():
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Fetch annual dividend history")
+    parser.add_argument("ticker", help="Ticker, e.g. MSFT, 1155")
+    args = parser.parse_args()
+
+    try:
+        data = fetch_dividend_history(args.ticker)
+    except Exception as exc:
+        data = None
+        print(f"error: {type(exc).__name__}: {exc}", file=sys.stderr)
+
+    if data:
+        print(json.dumps({"ok": True, "ticker": args.ticker, **data, "paths": isk_paths()}, indent=2))
+    else:
+        print(json.dumps({
+            "ok": False,
+            "ticker": args.ticker,
+            "status": "unavailable",
+        }, indent=2))
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()

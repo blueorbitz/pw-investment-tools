@@ -74,7 +74,7 @@ status: complete | partial | unavailable
 Scripts live in `data/us-filings/scripts/`:
 
 - `sec_filings.py` - fetches recent SEC filings by type. Handles EDGAR rate limiting and user-agent requirements.
-- `options_flow.py` - fetches unusual options activity data (if source available).
+- `options_flow.py` - unusual options activity. Commands: `scan <TICKER> [expiry]`, `sentiment <TICKER>`, `multi <T1,T2,...>`. Uses Yahoo cookie/crumb auth; when auth fails, mark options flow `unavailable` and continue (the rest of us-filings does not depend on it).
 
 **Environment variable required:** `SEC_EDGAR_USER_AGENT`
 

@@ -1,10 +1,22 @@
 #!/usr/bin/env python3
 import os
 import re
+import sys
 import requests
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Tuple
 import json
+
+# Shared-lib import: ISK_ROOT points at src/. A relative ISK_ROOT is ignored
+# for import purposes (CWD-dependent); __file__-relative resolution is used instead.
+_ROOT = os.environ.get("ISK_ROOT")
+if not _ROOT or not os.path.isabs(_ROOT):
+    _ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+sys.path.insert(0, os.path.join(_ROOT, "utility", "shared-lib", "scripts"))
+
+from yahoo_cache import _cache_dir, load_workspace_env  # noqa: E402
+
+load_workspace_env()
 
 # Institutional holder patterns (compiled for performance)
 _INSTITUTIONAL_PATTERN = re.compile(r'Persaraan|EPF|Trustees|Fund', re.IGNORECASE)
@@ -15,8 +27,8 @@ CLIENT_ID = os.getenv('BURSAWHALE_CLIENT_ID', '')
 CLIENT_SECRET = os.getenv('BURSAWHALE_CLIENT_SECRET', '')
 AUDIENCE = os.getenv('BURSAWHALE_AUDIENCE', 'https://mybursabi.kinde.com/api')
 
-# Token file location
-TOKEN_FILE = '.bursawhale_token.json'
+# Token cache lives in ISK_CACHE (env/.env resolved), not the current directory
+TOKEN_FILE = os.path.join(_cache_dir(), '.bursawhale_token.json')
 
 def get_access_token() -> str:
     """Get OAuth2 access token from Kinde using x-www-form-urlencoded"""

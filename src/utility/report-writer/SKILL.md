@@ -7,9 +7,23 @@ description: Handles all output file creation for the investment skills network.
 
 All output paths are relative to a configurable base directory:
 
-1. Read the `ISK_NOTES` environment variable.
-2. If unset, check for a `.env` file in the workspace root.
-3. If neither is set, default to `~/notes`.
+1. Run the path resolver:
+
+   ```bash
+   python <ISK_ROOT>/utility/shared-lib/scripts/isk_paths.py
+   ```
+
+2. Use its `isk_notes` value as the base directory for all output in this run.
+3. If the resolver cannot run, fall back to reading `ISK_NOTES` from the
+   environment, then `.env` in the workspace root, then `~/notes`.
+
+Precedence rules (enforced by the resolver): `.env` in the workspace root is
+the source of truth for `ISK_NOTES`, `ISK_CACHE`, and `ISK_ROOT` — it
+overrides an inherited environment variable, because scheduler/harness
+sessions often carry stale copies. Relative paths (e.g. `ISK_NOTES=./.notes`)
+resolve against the workspace root, never the current working directory. The
+Python scripts apply the identical rules via
+`utility/shared-lib/scripts/yahoo_cache.py`.
 
 Throughout all SKILL.md files, `$ISK_NOTES` refers to this resolved base path. If you set `ISK_NOTES=/home/user/Dropbox/research`, then `$ISK_NOTES/2024-03/...` becomes `/home/user/Dropbox/research/2024-03/...`.
 
@@ -42,6 +56,8 @@ Market: US | Bursa | Crypto
 
 ## Verdict
 
+Quality gate: quality-pass | speculative | reject
+
 Action: Buy | Sell | Hold
 Conviction: High | Medium | Low
 Current Price: $XX.XX
@@ -73,15 +89,9 @@ Thesis: <one sentence summary>
 ## Risks
 
 <what could go wrong, key assumptions that could break>
-
-## Position sizing
-
-Suggested allocation: X-Y% of portfolio
-Rationale: <based on conviction and volatility>
-Note: This is an assessment framework, not financial advice.
 ```
 
-Not all sections are required for every report type. Quick-look reports use: Verdict, Fundamentals, Technical setup. Deep-research reports use all sections.
+Not all sections are required for every report type. Quick-look reports use: Verdict (with factor summary), Thesis, Fundamentals, Technical setup. Deep-research reports use all sections. The gate line applies only to reports that ran the quality gate; quick-look and monitor reports omit it.
 
 ### Verdict block format
 

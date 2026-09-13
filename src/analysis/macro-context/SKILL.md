@@ -52,7 +52,7 @@ market: US | Bursa | Crypto
 
 ## Impact on individual stocks
 
-<how this macro backdrop should influence position sizing and conviction for stock-level decisions>
+<how this macro backdrop should influence conviction for stock-level decisions>
 ```
 
 ## Analysis framework

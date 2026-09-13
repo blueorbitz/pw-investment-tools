@@ -122,14 +122,6 @@ python scripts/yield_curve.py
 
 Requires `FRED_API_KEY` env var. Uses the `requests` library.
 
-### macro_calendar.py
-
-Fetches upcoming economic calendar events. Useful for flagging dates when macro data may shift.
-
-### sentiment_dashboard.py
-
-Fetches market sentiment proxies: VIX, put/call ratios, AAII survey if available.
-
 ## Error handling
 
 1. If `FRED_API_KEY` is not set, report `status: unavailable` and instruct the user to set it.

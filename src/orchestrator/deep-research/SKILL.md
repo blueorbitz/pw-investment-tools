@@ -1,6 +1,6 @@
 ---
 name: deep-research
-description: Runs the full research pipeline for any ticker across all three markets. Produces a complete report covering fundamentals, technicals, sentiment, macro context, and a final verdict with position sizing.
+description: Gate-routed full research pipeline for any ticker across all three markets. Shared data fetch, quality gate, conditional factor packs fanned out to parallel sub-agents, verdict via verdict_math.py, compressed report.
 ---
 
 ## Input
@@ -9,6 +9,20 @@ description: Runs the full research pipeline for any ticker across all three mar
 - `market` (optional) - override auto-detection: `US`, `Bursa`, or `Crypto`
 
 ## Pipeline steps
+
+### Step 0: Resolve paths (mandatory first action)
+
+Run the path resolver and use its output verbatim for every scratch and report
+path in this run — never guess from the current environment or directory:
+
+```bash
+python <ISK_ROOT>/utility/shared-lib/scripts/isk_paths.py
+```
+
+It prints `isk_root`, `isk_notes` (base for scratch and reports), and
+`isk_cache`. All `$ISK_NOTES/...` references below mean the resolver's
+`isk_notes` value. The data scripts also echo a `paths` block in their JSON
+output — cross-check against it if unsure.
 
 ### Step 1: Market detection
 
@@ -20,51 +34,94 @@ Same logic as quick-look:
 | Contains `/` or known crypto pairs | Crypto | `BTC/USD`, `ETH/USD` |
 | Standard alphabetic | US | `MSFT`, `AAPL` |
 
-### Step 2: Data fetch (parallel)
+### Step 2: Shared data fetch (parallel, cheap)
 
-Fetch ALL data skills for the detected market simultaneously:
+Fetch the data every run needs, regardless of what the gate later decides:
 
-| Market | Data skills invoked (all parallel) |
-|--------|-----------------------------------|
-| US | `data/fundamentals` + `data/price-history` (SPY) + `data/us-macro` + `data/us-filings` |
-| Bursa | `data/fundamentals` + `data/price-history` (^KLSE) + `data/bursa-macro` + `data/bursa-announcements` |
-| Crypto | `data/price-history` (BTC-USD for alts) + `data/crypto-fundamentals` + `data/crypto-onchain` + `data/crypto-derivatives` + `data/crypto-macro` |
+| Market | Fetches (all parallel) |
+|--------|------------------------|
+| US | `financials_fetch.py` + `price_history.py` (benchmark SPY) + `quote_fetch.py` + `data/us-filings` |
+| Bursa | `financials_fetch.py` + `price_history.py` (benchmark ^KLSE) + `quote_fetch.py` + `data/bursa-fundamentals` + `data/bursa-announcements` |
+| Crypto | `price_history.py` (benchmark BTC-USD for alts) + `quote_fetch.py` + `data/crypto-fundamentals` |
 
-All data skills write to the same scratch directory. Wait for all to complete (or timeout at 60 seconds per skill) before proceeding.
+Prices and quotes are fetched live every run — `yahoo_cache.py` serves its
+cache only as a fallback when the live fetch fails. Statements are cached
+daily; they cannot change intraday.
+
+All fetches write to the same scratch directory. Wait for completion (or the
+60-second per-skill timeout) before proceeding.
 
 **Reuse same-day scratch (cost discipline).** If a `quick-look` (or an earlier
-deep-research) already ran for this ticker today, its scratch for shared factors
-(fundamentals, price-history) is present and current — the daily cache in
-`yahoo_cache.py` covers the underlying data. Reuse those scratch files instead of
-re-fetching, and spend the run only on the factors deep-research adds
-(macro, sentiment, on-chain/derivatives, filings). Re-fetch only if the existing
-scratch is `status: partial`/`unavailable` or you have reason to believe it is stale.
+deep-research) already ran for this ticker today, its scratch for shared
+factors (fundamentals, price-history) is present and current — the same-day
+statement cache in `yahoo_cache.py` covers the underlying data. Reuse those
+scratch files instead of re-fetching, and spend the run only on the factor
+packs deep-research adds. Re-fetch only if the existing scratch is
+`status: partial`/`unavailable` or you have reason to believe it is stale.
+Prices and quotes are still fetched live regardless — freshness governs the
+first fetch of the day and every fast-path price.
 
 **On timeout or failure of a data skill:** mark that factor `unavailable`, continue,
 and let verdict-synthesis redistribute weight and cap conviction. Do not retry by
 default — a retry that also times out just burns cost. Name the gap in the report.
 
-### Step 3: Analysis (parallel, respecting data dependencies)
+### Step 3: Quality gate (before any deep work)
 
-Run ALL analysis skills for the detected market simultaneously. Each analysis skill reads the scratch it needs (written in step 2):
+Run `analysis/quality-gate` dispatch A on the shared data — the cheap screen
+that decides which factor packs this run actually needs:
 
-| Market | Analysis skills invoked (all parallel) |
-|--------|---------------------------------------|
-| US | `analysis/us-valuation` + `analysis/us-technical` + `analysis/us-sentiment` + `analysis/macro-context` (market=US) |
-| Bursa | `analysis/bursa-valuation` + `analysis/bursa-technical` + `analysis/bursa-sentiment` + `analysis/macro-context` (market=Bursa) |
-| Crypto | `analysis/crypto-valuation` + `analysis/crypto-technical` + `analysis/crypto-onchain-analysis` + `analysis/crypto-sentiment` + `analysis/macro-context` (market=Crypto) |
+- **quality-pass**: full pipeline on the normal track.
+- **speculative**: proceed; conviction will be capped at Medium (pass
+  `--cap Medium` to verdict_math.py in step 5) and the report leads with the
+  gate verdict.
+- **reject**: proceed only on the capped speculative track. A gate FAIL never
+  hard-stops or pauses — runs work headless. The report leads with
+  "Quality gate: REJECT" and the reasons, so the failure is always visible.
 
-### Step 4: Verdict synthesis (sequential)
+For US candidates on the quality-pass or speculative track, the gate's
+dispatch B reads its vendored buffett references and writes `us-valuation.md`
+scratch — that file is the US valuation factor for verdict-synthesis.
 
-Run `analysis/verdict-synthesis`. Reads all analysis scratch and produces the final verdict. This must run after all analysis skills complete because it needs all their outputs.
+Write the gate result to `quality-gate.md` in the ticker's scratch directory.
 
-### Step 5: Report assembly (sequential)
+### Step 4: Conditional factor packs (parallel sub-agents)
 
-Deep-research **gathers broadly but reports tightly**. Steps 2-3 fetch the full
-factor set for good coverage, but the final report must be balanced depth, not a data
+The gate routes breadth: fetch and analyze only what this candidate needs. Run
+each selected pack in a parallel sub-agent with one fresh context per pack —
+fresh context keeps each factor judgment clean and any single context small.
+Route the fan-out through the harness's kanban or task queue when one exists
+(e.g. Hermes): the queue retries reliably and keeps every pack visible. Each
+sub-agent reads only its own inputs from scratch and writes only its own
+output file. A pack that returns `unavailable` is a noted gap, not retried.
+
+| Factor pack | When |
+|-------------|------|
+| Technical (`<market>-technical`) | always |
+| Valuation (Bursa: `bursa-valuation`; Crypto: `crypto-valuation`) | always (US: already produced by gate dispatch B) |
+| Macro (`data/us-macro`/`data/bursa-macro`/`data/crypto-macro` + `analysis/macro-context`) | only when the gate flags it — macro-sensitive names, rate/FX exposure, risk-off regime |
+| Sentiment (`us-sentiment`/`bursa-sentiment`/`crypto-sentiment`) | only when the gate flags it — news-driven names, insider activity, contested theses |
+| On-chain + derivatives (`data/crypto-onchain` + `data/crypto-derivatives` + `analysis/crypto-onchain-analysis`) | always for crypto — verdict weights already give them 25% |
+
+### Step 5: Verdict synthesis (sequential)
+
+Run `analysis/verdict-synthesis`. It reads all analysis scratch, labels the
+factors, and delegates the scoring math to `verdict_math.py`:
+
+```bash
+python <ISK_ROOT>/utility/shared-lib/scripts/verdict_math.py \
+  --market US --label valuation=2 ... --cap Medium
+```
+
+Pass `--cap Medium` on the gate-FAIL or speculative track; omit it (default
+High ceiling) on the quality-pass track.
+
+### Step 6: Report assembly (sequential)
+
+Deep-research **gathers selectively but reports tightly**. The factor packs are
+chosen by the gate, and the final report must be balanced depth, not a data
 dump. Length and noise are failures, not thoroughness. The compression rule:
 
-- **Every factor keeps its signal.** Each analysis factor appears in the verdict's
+- **Every factor keeps its signal.** Each fetched factor appears in the verdict's
   factor-summary table with its strength label and one-line rationale. Nothing that
   feeds the decision is dropped.
 - **Prose is compressed, not the logic.** Each narrative section (Fundamentals,
@@ -78,67 +135,15 @@ dump. Length and noise are failures, not thoroughness. The compression rule:
 
 Use `utility/report-writer` conventions to assemble the report with these sections:
 
-1. **Verdict** - from verdict-synthesis scratch
+1. **Verdict** - includes the one-line gate result (quality-pass | speculative | reject)
 2. **Thesis** - expanded reasoning from verdict-synthesis
-3. **Fundamentals** - compressed summary from valuation analysis scratch
-4. **Technical setup** - compressed summary from technical analysis scratch
-5. **Sentiment and news** - compressed summary from sentiment analysis scratch
-6. **Macro context** - compressed summary from macro-context scratch
-7. **Risks** - synthesized from all analysis (each skill notes risks)
-8. **Position sizing** - from verdict-synthesis
+3. **Fundamentals** - compressed summary from valuation scratch
+4. **Technical setup** - compressed summary from technical scratch
+5. **Sentiment and news** - compressed summary from sentiment scratch (when fetched)
+6. **Macro context** - compressed summary from macro-context scratch (when fetched)
+7. **Risks** - synthesized from all fetched packs
 
 Write to: `$ISK_NOTES/YYYY-MM/YYYY-MM-DD-<TICKER>-deep-research.md`
-
-## Full decision tree
-
-```
-Input: ticker
-  │
-  ├─ Detect market
-  │
-  ├─── US ─────────────────────────────────────────────────────────┐
-  │     Step 2 [Parallel]:                                          │
-  │       data/fundamentals(ticker)                                 │
-  │       data/price-history(ticker, benchmark=SPY)                 │
-  │       data/us-macro()                                           │
-  │       data/us-filings(ticker)                                   │
-  │     Step 3 [Parallel]:                                          │
-  │       analysis/us-valuation (reads: fundamentals)               │
-  │       analysis/us-technical (reads: price-history)              │
-  │       analysis/us-sentiment (reads: us-filings + web-search)    │
-  │       analysis/macro-context (reads: us-macro, market=US)       │
-  │                                                                 │
-  ├─── Bursa ──────────────────────────────────────────────────────┐
-  │     Step 2 [Parallel]:                                          │
-  │       data/fundamentals(ticker)                                 │
-  │       data/price-history(ticker, benchmark=^KLSE)               │
-  │       data/bursa-macro()                                        │
-  │       data/bursa-announcements(ticker)                          │
-  │     Step 3 [Parallel]:                                          │
-  │       analysis/bursa-valuation (reads: fundamentals)            │
-  │       analysis/bursa-technical (reads: price-history)           │
-  │       analysis/bursa-sentiment (reads: bursa-announcements)     │
-  │       analysis/macro-context (reads: bursa-macro, market=Bursa) │
-  │                                                                 │
-  ├─── Crypto ─────────────────────────────────────────────────────┐
-  │     Step 2 [Parallel]:                                          │
-  │       data/price-history(ticker, benchmark=BTC-USD)             │
-  │       data/crypto-fundamentals(ticker)                          │
-  │       data/crypto-onchain(ticker)                               │
-  │       data/crypto-derivatives(ticker)                           │
-  │       data/crypto-macro()                                       │
-  │     Step 3 [Parallel]:                                          │
-  │       analysis/crypto-valuation (reads: crypto-fundamentals)    │
-  │       analysis/crypto-technical (reads: price-history, derivs)  │
-  │       analysis/crypto-onchain-analysis (reads: crypto-onchain)  │
-  │       analysis/crypto-sentiment (reads: web-search)             │
-  │       analysis/macro-context (reads: crypto-macro, market=Crypto)│
-  │                                                                 │
-  ├─ Step 4 [Sequential]: analysis/verdict-synthesis                │
-  │                                                                 │
-  └─ Step 5 [Sequential]: Write full report                         │
-      └─ $ISK_NOTES/YYYY-MM/YYYY-MM-DD-<TICKER>-deep-research.md
-```
 
 ## Output
 
@@ -152,8 +157,10 @@ Market: US | Bursa | Crypto
 
 ## Verdict
 
+Quality gate: quality-pass | speculative | reject
 Action: Buy | Sell | Hold
 Conviction: High | Medium | Low
+Current Price: $XXX.XX
 Target Price: $XXX.XX
 Timeframe: X months
 Stop Loss: $XXX.XX
@@ -173,72 +180,69 @@ Thesis: <one sentence>
 
 ## Sentiment and news
 
-<from sentiment analysis>
+<from sentiment analysis, when fetched>
 
 ## Macro context
 
-<from macro-context analysis>
+<from macro-context analysis, when fetched>
 
 ## Risks
 
 - <risk 1 from valuation>
 - <risk 2 from technical>
-- <risk 3 from macro>
-- <risk 4 from sentiment>
-
-## Position sizing
-
-Suggested allocation: X-Y% of portfolio
-Rationale: <conviction + volatility reasoning>
-Note: This is an assessment framework, not financial advice.
+- <risk 3 from macro, when fetched>
+- <risk 4 from sentiment, when fetched>
 ```
 
 Scratch directory preserved at: `$ISK_NOTES/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/`
 
-One file per sub-skill invoked:
+One file per skill or script invoked:
 - `fundamentals.md`
 - `price-history.md`
-- `us-macro.md` (or `bursa-macro.md` or `crypto-macro.md`)
-- `us-filings.md` (or `bursa-announcements.md` or `crypto-onchain.md`, etc.)
-- `us-valuation.md` (or market-specific equivalent)
-- `us-technical.md` (or market-specific equivalent)
-- `us-sentiment.md` (or market-specific equivalent)
-- `macro-context.md`
+- `quote.md` (quote_fetch output: multiples, market cap, FCF)
+- `quality-gate.md` (gate tier, scripted checks, checklist, dispatch B judgment)
+- `us-valuation.md` (US: written by gate dispatch B) or market-specific valuation
+- `<market>-technical.md`
+- `<market>-sentiment.md` (when fetched)
+- `macro-context.md` (when fetched)
+- `crypto-onchain-analysis.md` (crypto only)
 - `verdict-synthesis.md`
 
 ## Error handling
 
 - If a data skill fails, continue with remaining skills. The analysis and verdict layers handle partial inputs.
 - If all data skills for a market fail, abort with: "Could not fetch any data for <TICKER>. Check ticker and network connectivity."
-- If an analysis skill fails, proceed to verdict with whatever is available. Note the gap in the report.
+- If the quality gate cannot run (missing scratch), treat as speculative: proceed capped at Medium and note it.
+- If a factor-pack sub-agent fails or returns empty, note the gap in the report. Do not re-run the pack.
 - The report should always note what was unavailable in a "Gaps" note at the bottom, even if all sections are populated.
 - Timeout: if a data skill takes longer than 60 seconds, proceed without it and note "timed out" in scratch.
 
 ## Dependencies
 
-### Data skills (market-conditional)
+### Data skills and scripts (market-conditional)
 
-- `data/fundamentals` (US, Bursa)
-- `data/price-history` (all markets)
-- `data/us-macro` (US)
+- `data/fundamentals` scripts - `financials_fetch.py` (US, Bursa)
+- `data/price-history` scripts - `price_history.py` (all markets)
+- `data/fundamentals/scripts/quote_fetch.py` - multiples, all markets
 - `data/us-filings` (US)
-- `data/bursa-macro` (Bursa)
+- `data/bursa-fundamentals` (Bursa, peer context)
 - `data/bursa-announcements` (Bursa)
-- `data/crypto-fundamentals` (Crypto)
-- `data/crypto-onchain` (Crypto)
-- `data/crypto-derivatives` (Crypto)
-- `data/crypto-macro` (Crypto)
+- `data/crypto-fundamentals`, `data/crypto-onchain`, `data/crypto-derivatives` (Crypto; on-chain and derivatives unconditional)
+- `data/us-macro` | `data/bursa-macro` | `data/crypto-macro` (conditional on gate flags)
 
 ### Analysis skills (market-conditional)
 
-- `analysis/us-valuation` | `analysis/bursa-valuation` | `analysis/crypto-valuation`
+- `analysis/quality-gate` (gate stage; US valuation factor via dispatch B)
+- `analysis/bursa-valuation` | `analysis/crypto-valuation` (their markets)
 - `analysis/us-technical` | `analysis/bursa-technical` | `analysis/crypto-technical`
-- `analysis/us-sentiment` | `analysis/bursa-sentiment` | `analysis/crypto-sentiment`
+- `analysis/us-sentiment` | `analysis/bursa-sentiment` | `analysis/crypto-sentiment` (conditional)
 - `analysis/crypto-onchain-analysis` (Crypto only)
-- `analysis/macro-context` (all markets)
+- `analysis/macro-context` (conditional)
 - `analysis/verdict-synthesis` (all markets)
 
-### Utility
+### Shared files (not skills)
 
+- `utility/shared-lib/verdict_rubric.md` - scoring rules
+- `utility/shared-lib/scripts/verdict_math.py` - composite, conviction, weights
 - `utility/report-writer` - output formatting and paths
-- `utility/web-search` - called by sentiment skills as needed
+- `utility/web-search` - called by sentiment packs as needed

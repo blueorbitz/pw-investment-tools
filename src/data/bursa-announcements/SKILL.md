@@ -29,6 +29,7 @@ status: complete | partial | unavailable
 
 ### Insider summary
 
+- Role: corroborating only — adds conviction when fundamentals or momentum already support; good-to-know otherwise
 - Net activity (30d): net buying | net selling | mixed | quiet
 - Total acquired value: RM X.XM
 - Total disposed value: RM X.XM
@@ -56,9 +57,16 @@ status: complete | partial | unavailable
 
 ## Data sources
 
-### BursaWhale API (primary for insider transactions)
+### BursaWhale API (owner-built additional tool)
 
-The existing `bursawhale_api.py` script handles OAuth authentication and fetches insider transaction data from the BursaWhale API.
+The `bursawhale_api.py` script handles OAuth authentication and fetches insider
+transaction data from the BursaWhale API.
+
+**Usage policy.** BursaWhale is an additional-conviction tool, not a primary
+signal. Its data is recorded factually here, but downstream it only adds
+conviction when fundamentals or momentum already support the same direction.
+On its own it is good-to-know information — never a reason to enter, and never
+a factor strong enough to move a verdict by itself.
 
 **Environment variables required:**
 - `BURSAWHALE_CLIENT_ID` - OAuth client ID
@@ -70,7 +78,7 @@ python scripts/bursawhale_api.py fetch '{"stockCode": "1155", "startDate": "2024
 ```
 
 The script handles:
-- OAuth token management (with local caching)
+- OAuth token management (cached in `ISK_CACHE`, not the working directory)
 - Pagination for large result sets
 - Aggregation by stock and by holder
 - Institutional vs non-institutional classification

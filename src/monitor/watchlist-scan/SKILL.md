@@ -66,11 +66,13 @@ tickers:
 2. For each ticker:
    a. Fetch current price (use yahoo_cache or agent tools)
    b. Calculate % change since added to watchlist
-   c. Evaluate entry condition against current data (agent interprets free-text condition)
-   d. Check if catalyst_date is within 7 days (flag as imminent)
-   e. Quick news check (web search for material changes, optional)
+   c. **Cheap quality screen:** run `analysis/quality-gate/scripts/gate_checks.py` with the ticker's cached metrics (ROE, margins, debt, cash conversion — reuse the last fundamentals scratch for the ticker when present). A `reject`-tier ticker is only escalated when it also trips its entry condition; otherwise note "quality screen: reject" and keep monitoring.
+   d. Evaluate entry condition against current data (agent interprets free-text condition)
+   e. Check if catalyst_date is within 7 days (flag as imminent)
+   f. Quick news check (web search for material changes, optional)
 3. Sort results: conditions-met first, then catalysts-imminent, then by % change
-4. Write scan summary
+4. Escalate only tickers that trip entry conditions (or trip conditions AND pass the quality screen); the rest stay in the overview table
+5. Write scan summary
 
 ## Output format
 
@@ -168,5 +170,6 @@ Configure the schedule in your harness, not here.
 ## Dependencies
 
 - `data/price-history` - for current price and indicator data
+- `analysis/quality-gate` scripts - `gate_checks.py` for the cheap quality screen
 - `utility/web-search` - for catalyst news and material changes
 - `utility/report-writer` - for output path conventions

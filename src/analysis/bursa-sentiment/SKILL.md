@@ -29,6 +29,7 @@ status: complete | partial | unavailable
 
 ## Insider signal
 
+- Role: corroborating only — see the usage rule below
 - Net activity (30d): buying | selling | mixed | quiet
 - Signal strength: strong | moderate | weak
 - Key observation: <e.g., "Major shareholder increased stake by 2M shares at RM9.50">
@@ -41,6 +42,17 @@ status: complete | partial | unavailable
 - EPF/Persaraan increasing stake is mild positive (routine rebalancing vs conviction buy)
 - Major shareholder buying during privatization speculation is different from organic conviction
 - Disposed for "estate planning" or "personal financial" is noise, ignore
+
+### Usage rule: additional conviction only
+
+Insider data (BursaWhale) is an additional-conviction tool, never a primary
+signal. Use it to add conviction **only when the fundamental or technical
+factors already point the same direction** — e.g. director buying on top of an
+uptrend and intact fundamentals. When valuation or technicals do not already
+support the direction, record the insider activity as good-to-know context in
+this scratch **without moving the sentiment strength label**. The rubric
+enforces this mechanically too: sentiment (and therefore insider data) can
+never trigger the single-factor conviction override.
 
 ## Institutional flow signal
 
@@ -86,8 +98,8 @@ status: complete | partial | unavailable
 
 ## Analysis framework
 
-1. **Insider transaction patterns.** The most reliable signal for Bursa. Malaysia has strong disclosure requirements for substantial shareholders. Focus on:
-   - Open market purchases by directors (strong buy signal)
+1. **Insider transaction patterns (corroborating only).** Malaysia has strong disclosure requirements for substantial shareholders, so the data is trustworthy — but per the usage rule above it amplifies an existing case rather than creating one. Focus on:
+   - Open market purchases by directors (strong buy signal *when fundamentals/momentum already agree*)
    - Major shareholder increasing above mandatory offer threshold
    - Cluster selling by multiple insiders (distribution warning)
    - Distinguish EPF rebalancing (routine) from conviction positions (meaningful)

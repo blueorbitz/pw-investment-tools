@@ -6,7 +6,11 @@ import os
 import json
 from datetime import datetime
 
-ISK_ROOT = os.environ.get("ISK_ROOT", os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+# ISK_ROOT points at src/. A relative ISK_ROOT is ignored for import purposes
+# (CWD-dependent); __file__-relative resolution is used instead.
+ISK_ROOT = os.environ.get("ISK_ROOT")
+if not ISK_ROOT or not os.path.isabs(ISK_ROOT):
+    ISK_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 sys.path.insert(0, os.path.join(ISK_ROOT, "utility", "shared-lib", "scripts"))
 from yahoo_cache import fetch_yahoo_cached
 

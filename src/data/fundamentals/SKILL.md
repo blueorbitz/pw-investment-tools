@@ -76,11 +76,12 @@ market: US | Bursa
 
 ### US market
 
-- **Primary:** Yahoo Finance timeseries API via `financials_fetch.py`
-  - Fetches: annual revenue, operating income, FCF, net income
+- **Primary:** Yahoo Finance quoteSummary API via `financials_fetch.py` (cookie+crumb auth handled in `yahoo_cache.py`)
+  - Fetches: annual revenue, operating income, FCF, net income (~4 years). Yahoo leaves operating income and FCF null for some companies — record the gap rather than estimating.
 - **Dividend:** Yahoo Finance chart API with dividend events via `dividend_fetch.py`
   - Fetches: annual DPS history
-- **Valuation multiples:** Agent fetches from Yahoo Finance quote endpoint (PE, PEG, market cap) directly using web tools. No script needed for these point-in-time values.
+- **Valuation multiples:** `quote_fetch.py` (Yahoo quoteSummary endpoint)
+  - Fetches: PE, forward PE, PEG, market cap, FCF, shares outstanding, 52-week range. No agent web-fetching for point-in-time numbers.
 
 ### Bursa market
 
@@ -88,19 +89,23 @@ market: US | Bursa
   - Scrapes quarterly reports, aggregates to annual revenue and net income
 - **Dividend:** KLSE Screener dividend table via `dividend_fetch.py`
   - Scrapes annual DPS history
-- **Valuation multiples:** Agent fetches from KLSE Screener stock page (PE, PB, DY, ROE). No script needed.
+- **Valuation multiples:** `quote_fetch.py` (Yahoo with `.KL` suffix)
+  - Fetches: PE, forward PE, market cap, P/B, dividend yield, 52-week range
 
 ## Scripts
 
-Both scripts live in `data/fundamentals/scripts/`:
+Scripts live in `data/fundamentals/scripts/`:
 
-- `financials_fetch.py` - call with ticker argument. Prints JSON with `revenue`, `operating_income`, `fcf`, `net_income` arrays. Routes internally (Yahoo for US, KLSE Screener for Bursa).
-- `dividend_fetch.py` - importable module. Call `fetch_dividend_history(ticker)` to get `{"dps_annual": [...]}`.
+- `financials_fetch.py` - call with ticker argument. Prints JSON with `revenue`, `operating_income`, `fcf`, `net_income` arrays (Bursa: revenue and net income only). Routes internally (Yahoo for US, KLSE Screener for Bursa).
+- `dividend_fetch.py` - call with ticker argument, or import `fetch_dividend_history(ticker)` to get `{"dps_annual": [...]}`. Routes internally (Yahoo for US, KLSE Screener for Bursa).
+- `quote_fetch.py` - call with ticker argument. Prints JSON with price, PE, forward PE, PEG, market cap, FCF, shares outstanding, 52-week range. Live fetch every run; cache is fallback-only.
 
 Usage:
 ```bash
 python scripts/financials_fetch.py MSFT
 python scripts/financials_fetch.py 1155
+python scripts/dividend_fetch.py 1155
+python scripts/quote_fetch.py MSFT
 ```
 
 The scripts use `ISK_ROOT` to resolve imports from `utility/shared-lib/scripts/`. If unset, they fall back to `__file__`-relative paths.
@@ -108,12 +113,12 @@ The scripts use `ISK_ROOT` to resolve imports from `utility/shared-lib/scripts/`
 ## Error handling
 
 1. If the primary API (Yahoo/KLSE Screener) fails, note which data is unavailable in the output.
-2. For US tickers: if Yahoo timeseries fails, try fetching basic data via the agent's web tools from Yahoo Finance website directly.
-3. For Bursa tickers: if KLSE Screener fails, try Yahoo Finance with `.KL` suffix as fallback (less data but some coverage).
+2. For US tickers: if Yahoo timeseries fails, `quote_fetch.py` still supplies multiples (separate endpoint); mark the statements themselves unavailable. Do not web-browse for point-in-time numbers.
+3. For Bursa tickers: KLSE Screener is the only statement source (revenue and net income; operating income and FCF are not scraped). If it fails, mark statements unavailable — `quote_fetch.py` multiples remain available.
 4. If all sources fail, write scratch with `status: unavailable` and a clear reason.
 5. Partial data is acceptable. Write what you have and note gaps in the "Data gaps" section.
 
 ## Dependencies
 
-- `utility/shared-lib` - `yahoo_cache.py` used by the scripts for cached HTTP fetching
+- `utility/shared-lib/scripts/` - `yahoo_cache.py` (cache + authenticated Yahoo fetches); shared scripts, not a skill
 - `utility/report-writer` - for scratch path conventions

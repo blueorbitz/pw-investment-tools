@@ -84,7 +84,11 @@ market: US | Bursa | Crypto
 ## Data sources
 
 - **Primary:** Yahoo Finance via `yahoo_cache.py` (shared cache layer)
-- **Cache:** Local file cache at `$ISK_CACHE/`, defaulting to `~/.cache/` when `ISK_CACHE` is unset. It invalidates daily after market close.
+- **Fresh-price semantics:** prices are decision-relevant data and are fetched
+  LIVE on every run. The local file cache (`$ISK_CACHE/`, defaulting to
+  `~/.cache/`) is a FALLBACK only: it is served when the live fetch fails,
+  marked `"stale": true` in the meta. Set `ISK_PRICE_TTL_MINUTES` (e.g. 15) to
+  serve the cache within that window as opt-in cost control.
 - **Ticker normalization:** handled by `yahoo_cache.py` (`_normalize_ticker` function)
 
 ## Scripts
@@ -136,5 +140,5 @@ Override with the `period` argument when you need longer history (e.g., `2y` for
 
 ## Dependencies
 
-- `utility/shared-lib` - `yahoo_cache.py` for cached Yahoo Finance fetching
+- `utility/shared-lib/scripts/` - `yahoo_cache.py` for cached Yahoo Finance fetching; shared scripts, not a skill
 - `utility/report-writer` - for scratch path conventions

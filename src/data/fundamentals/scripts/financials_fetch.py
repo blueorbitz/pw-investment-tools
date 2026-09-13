@@ -1,16 +1,29 @@
 #!/usr/bin/env python3
-"""Data retrieval layer for DCF model.
+"""Data retrieval layer for annual financial statements.
 
 Fetches historical financial data from:
-- Yahoo Finance timeseries API (non-KLSE global stocks)
-- KLSE Screener (Bursa Malaysia stocks)
+- Yahoo Finance quoteSummary API (non-KLSE global stocks; requires cookie+crumb,
+  handled by yahoo_cache.yahoo_summary)
+- KLSE Screener (Bursa Malaysia stocks; revenue and net income only)
 
-All functions return standardized data structures consumed by dcf_model.py.
+Consumed by the data/fundamentals skill; output lands in the fundamentals.md
+scratch file for quick-look, deep-research, and the quality gate.
 """
 
 import json
+import os
 import re
+import sys
 import urllib.request
+
+# ISK_ROOT points at src/. A relative ISK_ROOT is ignored for import purposes
+# (CWD-dependent); __file__-relative resolution is used instead.
+_ROOT = os.environ.get("ISK_ROOT")
+if not _ROOT or not os.path.isabs(_ROOT):
+    _ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+sys.path.insert(0, os.path.join(_ROOT, "utility", "shared-lib", "scripts"))
+
+from yahoo_cache import isk_paths, yahoo_summary  # noqa: E402
 
 
 UA = (
@@ -59,47 +72,50 @@ def is_klse_ticker(ticker):
 # YAHOO FINANCE — Global stocks (US, EU, etc.)
 # =============================================================================
 
-def fetch_yahoo_timeseries(ticker):
-    """Fetch annual financials from Yahoo Finance timeseries API.
+def fetch_yahoo_statements(ticker):
+    """Fetch annual financials from Yahoo quoteSummary (cookie+crumb auth).
+
+    The old timeseries endpoint stopped serving statement types crumb-free;
+    quoteSummary is the working source. Returns up to 4 annual statements.
 
     Returns dict with keys: revenue, operating_income, fcf, net_income.
     Each value is a list of {"date": str, "value": float} sorted oldest-first.
     Returns None on failure.
     """
     yf_ticker = normalize_ticker_yf(ticker)
-    types = "annualTotalRevenue,annualOperatingIncome,annualFreeCashFlow,annualNetIncome"
-    url = (
-        f"https://query1.finance.yahoo.com/ws/fundamentals-timeseries/v1/finance/timeseries/"
-        f"{yf_ticker}?type={types}&period1=1388534400&period2=9999999999"
-    )
-    req = urllib.request.Request(url, headers={"User-Agent": UA})
 
-    parsed = {"revenue": [], "operating_income": [], "fcf": [], "net_income": []}
-    key_map = {
-        "annualTotalRevenue": "revenue",
-        "annualOperatingIncome": "operating_income",
-        "annualFreeCashFlow": "fcf",
-        "annualNetIncome": "net_income",
-    }
+    def raw(node):
+        return node.get("raw") if isinstance(node, dict) else None
 
     try:
-        with urllib.request.urlopen(req, timeout=12) as resp:
-            data = json.loads(resp.read().decode())
-
-        for r in data.get("timeseries", {}).get("result", []):
-            for api_key, local_key in key_map.items():
-                entries = r.get(api_key, [])
-                if entries and isinstance(entries, list):
-                    for entry in entries:
-                        if isinstance(entry, dict):
-                            val = entry.get("reportedValue", {}).get("raw")
-                            date = entry.get("asOfDate", "")
-                            if val is not None:
-                                parsed[local_key].append({"date": date, "value": val})
+        result = yahoo_summary(yf_ticker, "incomeStatementHistory,cashflowStatementHistory")
     except Exception:
         return None
 
-    # Sort by date ascending
+    parsed = {"revenue": [], "operating_income": [], "fcf": [], "net_income": []}
+
+    ish = result.get("incomeStatementHistory", {}).get("incomeStatementHistory", [])
+    for s in ish:
+        date = (s.get("endDate") or {}).get("fmt")
+        if not date:
+            continue
+        for key, field in (("revenue", "totalRevenue"),
+                           ("operating_income", "operatingIncome"),
+                           ("net_income", "netIncome")):
+            value = raw(s.get(field))
+            if value is not None:
+                parsed[key].append({"date": date, "value": value})
+
+    cfh = result.get("cashflowStatementHistory", {}).get("cashflowStatements", [])
+    for s in cfh:
+        date = (s.get("endDate") or {}).get("fmt")
+        ocf = raw(s.get("totalCashFromOperatingActivities"))
+        capex = raw(s.get("capitalExpenditures"))
+        if date and ocf is not None and capex is not None:
+            # Yahoo reports capex as a negative number
+            fcf = ocf + capex if capex < 0 else ocf - capex
+            parsed["fcf"].append({"date": date, "value": fcf})
+
     for key in parsed:
         parsed[key].sort(key=lambda x: x["date"])
 
@@ -233,4 +249,32 @@ def fetch_annual_financials(ticker):
             stock_code = stock_code.split(":")[0]
         return fetch_klse_screener(stock_code)
     else:
-        return fetch_yahoo_timeseries(ticker)
+        return fetch_yahoo_statements(ticker)
+
+
+def main():
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Fetch annual financial statements")
+    parser.add_argument("ticker", help="Ticker, e.g. MSFT, 1155, BTC-USD")
+    args = parser.parse_args()
+
+    try:
+        data = fetch_annual_financials(args.ticker)
+    except Exception as exc:
+        data = None
+        print(f"error: {type(exc).__name__}: {exc}", file=sys.stderr)
+
+    if data:
+        print(json.dumps({"ok": True, "ticker": args.ticker, **data, "paths": isk_paths()}, indent=2))
+    else:
+        print(json.dumps({
+            "ok": False,
+            "ticker": args.ticker,
+            "status": "unavailable",
+        }, indent=2))
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
