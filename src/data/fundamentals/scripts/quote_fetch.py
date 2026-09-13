@@ -37,6 +37,7 @@ from yahoo_cache import (  # noqa: E402
     store_cache,
     yahoo_summary,
 )
+from ticker_display import display_ticker  # noqa: E402
 
 QUOTE_MODULES = "price,summaryDetail,defaultKeyStatistics,financialData"
 
@@ -66,9 +67,12 @@ def _parse_quote(result):
     fcf = _raw(fd.get("freeCashflow"))
     fcf_yield = round(fcf / market_cap * 100, 2) if (fcf and market_cap) else None
 
+    symbol = _raw(price.get("symbol")) or price.get("symbol")
+    display_name = price.get("shortName") or price.get("longName")
     payload = {
-        "symbol": _raw(price.get("symbol")) or price.get("symbol"),
+        "symbol": symbol,
         "name": price.get("longName") or price.get("shortName"),
+        "display_ticker": display_ticker(symbol or ticker, name=display_name),
         "currency": _raw(price.get("currency")),
         "price": _raw(price.get("regularMarketPrice")),
         "trailing_pe": _raw(sd.get("trailingPE")),

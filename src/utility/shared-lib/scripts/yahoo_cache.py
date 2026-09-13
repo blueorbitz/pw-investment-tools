@@ -184,8 +184,24 @@ def _cache_key(kind, ticker, interval="NA", period="NA"):
     return f"{safe_ticker}_{kind}_{interval}_{period}.json"
 
 
+def _date_prefix():
+    """Today's date prefix for the cache layout: YYYY-MM/YYYY-MM-DD-.
+
+    Keeping cache files grouped under a per-month directory, stamped with the
+    fetch date, makes the cache self-describing and trivial to prune by age
+    (see utility/cache-cleanup): every file's birth date is in its path.
+    """
+    now = datetime.now(tz=MYT)
+    month = now.strftime("%Y-%m")
+    day = now.strftime("%Y-%m-%d")
+    return month, f"{day}-"
+
+
 def _cache_path(kind, ticker, interval="NA", period="NA"):
-    return os.path.join(_cache_dir(), _cache_key(kind, ticker, interval, period))
+    month, day_prefix = _date_prefix()
+    return os.path.join(
+        _cache_dir(), month, f"{day_prefix}{_cache_key(kind, ticker, interval, period)}",
+    )
 
 
 def load_cache(cache_path):

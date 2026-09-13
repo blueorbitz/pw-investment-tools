@@ -143,14 +143,19 @@ Use `utility/report-writer` conventions to assemble the report with these sectio
 6. **Macro context** - compressed summary from macro-context scratch (when fetched)
 7. **Risks** - synthesized from all fetched packs
 
-Write to: `$ISK_NOTES/YYYY-MM/YYYY-MM-DD-<TICKER>-deep-research.md`
+Write to: `$ISK_NOTES/YYYY-MM/YYYY-MM-DD-<DISPLAY_TICKER>-deep-research.md`
+
+Use the ticker's **display ticker** in the title and filename — for Bursa
+tickers that is the numeric code plus `.KL` and short company name (e.g.
+`1155.KL-MAYBANK`); for others it is the normalized symbol. The data scripts
+emit `display_ticker` in their JSON output.
 
 ## Output
 
-Final report at: `$ISK_NOTES/YYYY-MM/YYYY-MM-DD-<TICKER>-deep-research.md`
+Final report at: `$ISK_NOTES/YYYY-MM/YYYY-MM-DD-<DISPLAY_TICKER>-deep-research.md`
 
 ```markdown
-# <TICKER> - Deep Research
+# <DISPLAY_TICKER> - Deep Research
 
 Date: YYYY-MM-DD
 Market: US | Bursa | Crypto
@@ -194,7 +199,7 @@ Thesis: <one sentence>
 - <risk 4 from sentiment, when fetched>
 ```
 
-Scratch directory preserved at: `$ISK_NOTES/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/`
+Scratch directory preserved at: `$ISK_NOTES/YYYY-MM/.scratch/YYYY-MM-DD-<DISPLAY_TICKER>/`
 
 One file per skill or script invoked:
 - `fundamentals.md`

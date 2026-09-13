@@ -14,6 +14,7 @@ if not ISK_ROOT or not os.path.isabs(ISK_ROOT):
     ISK_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 sys.path.insert(0, os.path.join(ISK_ROOT, "utility", "shared-lib", "scripts"))
 from yahoo_cache import fetch_yahoo_cached
+from ticker_display import display_ticker
 
 
 def ema(data, period):
@@ -382,6 +383,8 @@ def main():
         "ok": True,
         "ticker": ticker,
         "name": meta.get("longName") or meta.get("shortName") or ticker,
+        "display_ticker": display_ticker(
+            ticker, name=meta.get("shortName") or meta.get("longName")),
         "currency": meta.get("currency", ""),
         "period": period,
         "data_points": len(candles),

@@ -58,9 +58,9 @@ flowchart TB
 | US pack | `data/us-macro`, `data/us-filings`; `analysis/us-technical`, `analysis/us-sentiment` |
 | Bursa pack | `data/bursa-announcements`, `data/bursa-fundamentals`, `data/bursa-macro`; `analysis/bursa-valuation`, `analysis/bursa-technical`, `analysis/bursa-sentiment` |
 | Crypto pack | `data/crypto-fundamentals`, `data/crypto-onchain`, `data/crypto-derivatives`, `data/crypto-macro`; `analysis/crypto-valuation`, `analysis/crypto-technical`, `analysis/crypto-onchain-analysis`, `analysis/crypto-sentiment` |
-| Shared analysis and utilities | `analysis/macro-context`, `analysis/verdict-synthesis`; `utility/report-writer`, `utility/web-search` |
+| Shared analysis and utilities | `analysis/macro-context`, `analysis/verdict-synthesis`; `utility/report-writer`, `utility/web-search`, `utility/cache-cleanup` |
 
-`analysis/us-valuation` was removed: the quality gate's buffett dispatch B supplies the US valuation factor. Shared scoring lives in `utility/shared-lib` (`verdict_rubric.md`, `scripts/verdict_math.py`) — files, not skills.
+`analysis/us-valuation` was removed: the quality gate's buffett dispatch B supplies the US valuation factor. Shared scoring lives in `utility/shared-lib` (`verdict_rubric.md`, `scripts/verdict_math.py`); shared ticker normalization and Bursa display names live in `utility/shared-lib/scripts/ticker_display.py` — files, not skills.
 
 Yellow boxes are orchestrators, green boxes are monitors, blue boxes are data, pink boxes are analysis, and grey boxes are utilities.
 
@@ -84,7 +84,8 @@ src/
 ├── utility/              # Shared helpers
 │   ├── report-writer/        # Output paths, report template
 │   ├── web-search/           # When/how to use web search
-│   └── shared-lib/           # yahoo_cache.py, quote cache, verdict_rubric.md, verdict_math.py
+│   ├── cache-cleanup/        # Prune stale cache files (default: older than 7 days)
+│   └── shared-lib/           # yahoo_cache.py, ticker_display.py, quote cache, verdict_rubric.md, verdict_math.py
 │
 ├── data/                 # Fetch and normalize (never interpret)
 │   ├── fundamentals/         # US + Bursa financials + quote_fetch.py (multiples)
@@ -134,6 +135,7 @@ src/
 | `ISK_NOTES` | Base directory for all output (reports, scratch, portfolio). | `~/notes` |
 | `ISK_CACHE` | Cache directory for Yahoo fetches (fallback-only for prices, daily for statements). | `~/.cache` |
 | `ISK_PRICE_TTL_MINUTES` | Opt-in: serve the price/quote cache within this window instead of fetching live every run. | None (always live) |
+| `ISK_CACHE_MAX_AGE_DAYS` | Retention window for `utility/cache-cleanup` (prunes cache files older than this). | 7 |
 | `FRED_API_KEY` | FRED API for US macro data | None (us-macro reports "unavailable") |
 | `SEC_EDGAR_USER_AGENT` | SEC EDGAR access for US filings | None (filings uses web search fallback) |
 | `BURSAWHALE_CLIENT_ID` | BursaWhale API for insider data | None (announcements uses web search) |
@@ -181,13 +183,14 @@ All output goes into the directory pointed to by `ISK_NOTES` (defaults to `~/not
 ```
 $ISK_NOTES/
 ├── YYYY-MM/
-│   ├── YYYY-MM-DD-MSFT-quick-look.md         # Quick-look reports
-│   ├── YYYY-MM-DD-BTC-deep-research.md       # Deep-research reports
+│   ├── YYYY-MM-DD-MSFT-quick-look.md              # Quick-look reports
+│   ├── YYYY-MM-DD-BTC-USD-deep-research.md        # Deep-research reports
+│   ├── YYYY-MM-DD-1155.KL-MAYBANK-quick-look.md   # Bursa reports use the display ticker
 │   └── .scratch/
-│       └── YYYY-MM-DD-MSFT/                  # Intermediate per-skill outputs
+│       └── YYYY-MM-DD-1155.KL-MAYBANK/            # Intermediate per-skill outputs
 │           ├── fundamentals.md
 │           ├── price-history.md
-│           ├── us-valuation.md
+│           ├── bursa-valuation.md
 │           └── verdict-synthesis.md
 │
 ├── portfolio/
@@ -202,6 +205,15 @@ $ISK_NOTES/
     └── scans/YYYY-MM/
         └── YYYY-MM-DD-watchlist-scan.md
 ```
+
+### Ticker naming in reports and scratch dirs
+
+Report titles, filenames, and scratch directory names use each ticker's **display ticker**:
+
+- **Bursa Malaysia**: the numeric code plus `.KL` and the short company name, e.g. `1155.KL-MAYBANK`, `1023.KL-CIMB`, `1295.KL-PBB`. This keeps Bursa research legible — a bare `1155` is hard to scan.
+- **US / Crypto**: the normalized symbol, e.g. `MSFT`, `AAPL`, `BTC-USD`, `ETH-USD` (note the slash becomes a dash).
+
+The data scripts emit `display_ticker` in their JSON output; the orchestrators and report-writer use it for the title and filename. Bursa names come from the Yahoo Finance short name when it looks like a common name, falling back to a curated table of well-known codes (`src/utility/shared-lib/scripts/ticker_display.py`), and finally to the bare `1155.KL` code.
 
 ### Customizing the output location
 
@@ -219,6 +231,46 @@ If unset, everything goes to `~/notes`. The directory is created automatically o
 
 The scratch directory (`.scratch/`) holds intermediate outputs from each sub-skill. You can inspect these to trace how the agent reached its conclusion. They're kept alongside reports for auditability.
 
+## Cache directory
+
+The cache lives at `ISK_CACHE` (defaults to `~/.cache`). Files are written into a
+**date-addressed layout** so every entry carries its birth date in its path:
+
+```
+$ISK_CACHE/
+├── YYYY-MM/                                  # per-month bucket
+│   └── YYYY-MM-DD-<TICKER>_<KIND>_<INT>_<PER>.json
+└── .bursawhale_token.json                    # OAuth token (own TTL)
+```
+
+Example: `.cache/2026-09/2026-09-13-1155_price_1d_1y.json`.
+
+Because the fetch date is in the path (not just the mtime), moving or backing up
+the cache never makes a file look freshly fetched. See the cache policy in
+`src/utility/shared-lib/scripts/yahoo_cache.py` (prices are fetched live every
+run — the cache is a fallback served only on failure; statements are cached for
+the local calendar day).
+
+### Cache cleanup
+
+`utility/cache-cleanup` prunes cache files older than a retention window (default
+**7 days**, override with `ISK_CACHE_MAX_AGE_DAYS` or `--max-age-days`). Age is
+decided from the path, so it is safe to run any time:
+
+```bash
+# Preview what would be removed (no deletion)
+python src/utility/cache-cleanup/scripts/cleanup_cache.py --dry-run
+
+# Prune files older than the retention window
+python src/utility/cache-cleanup/scripts/cleanup_cache.py
+
+# Custom window + include the bursawhale token
+python src/utility/cache-cleanup/scripts/cleanup_cache.py --max-age-days 14 --include-token
+```
+
+Schedule it on the same cadence as your other maintenance (e.g. a weekly cron or
+harness job alongside the monitor skills).
+
 ## Usage
 
 Tell the agent which skill to run:
@@ -230,6 +282,7 @@ Tell the agent which skill to run:
 | "Run deep-research on 1155" | Full Bursa research (Maybank) |
 | "Run portfolio review" | Check all holdings vs stops/targets |
 | "Run watchlist scan" | Check watchlist for entry conditions |
+| "Run cache cleanup" | Prune cache files older than the retention window |
 | "Run alert checker" | Evaluate custom alert conditions |
 
 ## Market detection
@@ -253,6 +306,60 @@ Configure schedules in your harness. Suggested cadence:
 - Alert check — daily (pre-market for equities), every 4-6 hours for crypto positions.
 
 Set `ISK_NOTES` in the harness environment so the skills resolve the right base path for holdings/watchlist files and output.
+
+## Testing
+
+The `tests/` directory holds a regression suite that runs without any network or
+LLM access, plus optional live headless runs of the real orchestrators.
+
+### Offline contract tests (always run)
+
+`tests/test_skill_contract.py` pins the wiring of the two orchestrators for all
+three markets: every skill and script an orchestrator is documented to invoke
+must exist on disk, and the orchestrator must still reference it. It also
+verifies the path resolver honors `.env`. These are pure filesystem assertions
+— fast and deterministic:
+
+```bash
+python -m unittest tests.test_skill_contract.py -v
+```
+
+### Live headless runs (opt-in)
+
+`tests/test_skill_integration.py` actually runs each orchestrator in
+non-interactive mode via your agent CLI, for every (mode × market) combination,
+then asserts the report lands under the `.env`-resolved notes dir with the right
+sections and market wiring. These call the real agent and fetch live data, so
+they are opt-in:
+
+```bash
+# Run all six cases (quick-look + deep-research × US, Bursa, Crypto)
+ISK_LIVE=1 python -m unittest tests.test_skill_integration.py -v
+
+# Run a single market × mode pair (cheaper/faster)
+ISK_LIVE=1 ISK_ONE_CASE=quick-look,US python -m unittest tests.test_skill_integration.py -v
+```
+
+A convenience runner wraps this and forces `ISK_LIVE` on:
+
+```bash
+python tests/run_live.py                       # all six
+python tests/run_live.py deep-research,Crypto   # one case
+```
+
+Each live case invokes the agent headless (e.g. `cmdc -p "..." --skill src --yolo`),
+so it needs an authenticated CLI session and a model budget. The deep-research
+cases fan out to many sub-skills and take longer than quick-look.
+
+### What the suite covers
+
+- **quick-look** and **deep-research** run end-to-end for **US, Bursa, and Crypto**.
+- Output respects `.env` (reports land under `ISK_NOTES`, never `~/notes`).
+- Reports carry the mode's required sections and the correct market label.
+- Deep-research reports include a quality-gate verdict (proving the downstream
+  analysis wiring fired).
+- The offline contract tests catch wiring regressions (a missing skill or a
+  renamed script) cheaply, before any live run.
 
 ## Portfolio and watchlist files
 

@@ -24,48 +24,19 @@ if not _ROOT or not os.path.isabs(_ROOT):
 sys.path.insert(0, os.path.join(_ROOT, "utility", "shared-lib", "scripts"))
 
 from yahoo_cache import isk_paths, yahoo_summary  # noqa: E402
+from ticker_display import (  # noqa: E402
+    is_bursa_ticker as is_klse_ticker,
+    normalize_ticker_yf,
+)
+
+# Back-compat alias: is_klse_ticker is the historic name used below.
+is_klse_ticker = is_klse_ticker
 
 
 UA = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
     "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
 )
-
-
-# =============================================================================
-# TICKER UTILITIES
-# =============================================================================
-
-def normalize_ticker_yf(ticker):
-    """Normalize ticker for Yahoo Finance API.
-
-    - Numeric codes (e.g. '1155') → '1155.KL' (Bursa Malaysia)
-    - Exchange-qualified (e.g. '1155:KLSE') → '1155.KL'
-    - Everything else → as-is (e.g. 'MSFT', 'GOOG')
-    """
-    t = str(ticker).upper().strip()
-    if t.isdigit():
-        return f"{t}.KL"
-    if ":" in t:
-        base, exch = t.split(":")
-        if exch in ("XKLS", "KLSE"):
-            return f"{base}.KL"
-    return t
-
-
-def is_klse_ticker(ticker):
-    """Check if a ticker represents a KLSE-listed stock."""
-    raw = str(ticker).strip()
-    if raw.isdigit():
-        return True
-    upper = raw.upper()
-    if upper.endswith(".KL") and upper.split(".")[0].isdigit():
-        return True
-    if ":" in upper:
-        _, exch = upper.split(":", 1)
-        if exch in ("XKLS", "KLSE"):
-            return True
-    return False
 
 
 # =============================================================================

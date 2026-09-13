@@ -3,4 +3,5 @@
 .notes
 .cache
 .env
+tests/logs
 __pycache__

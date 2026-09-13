@@ -48,8 +48,15 @@ The calling skill provides:
 
 Every investment report follows this section order:
 
+For Bursa Malaysia tickers, `<TICKER>` is the **display ticker** — the numeric
+code with its `.KL` suffix and short company name, e.g. `1155.KL-MAYBANK`,
+`1023.KL-CIMB`. This makes reports and scratch dirs legible at a glance. The
+data scripts emit `display_ticker` in their JSON output; use it for the title
+and filename. For US and crypto tickers the display ticker is just the
+normalized symbol (e.g. `MSFT`, `BTC-USD`).
+
 ```markdown
-# <TICKER> - <Report Type>
+# <DISPLAY_TICKER> - <Report Type>
 
 Date: YYYY-MM-DD
 Market: US | Bursa | Crypto
@@ -128,29 +135,31 @@ If the skill could not produce output (API failure, insufficient data), set `sta
 
 All paths below use `$ISK_NOTES` as the base directory (defaults to `~/notes` if unset).
 
+`<TICKER>` below is the **display ticker** — see the report template above.
+For Bursa tickers that means `1155.KL-MAYBANK`; for others the normalized symbol.
+
 ### Final reports
 
 ```
-$ISK_NOTES/YYYY-MM/YYYY-MM-DD-<TICKER>-<report-type>.md
+$ISK_NOTES/YYYY-MM/YYYY-MM-DD-<DISPLAY_TICKER>-<report-type>.md
 ```
 
 Examples:
 - `$ISK_NOTES/2024-03/2024-03-15-MSFT-quick-look.md`
-- `$ISK_NOTES/2024-03/2024-03-15-BTC-deep-research.md`
-- `$ISK_NOTES/2024-03/2024-03-15-1155-deep-research.md`
-
-Ticker in filenames: uppercase, strip exchange suffixes (.KL), replace `/` with `-`.
+- `$ISK_NOTES/2024-03/2024-03-15-BTC-USD-deep-research.md`
+- `$ISK_NOTES/2024-03/2024-03-15-1155.KL-MAYBANK-deep-research.md`
 
 ### Scratch notes
 
 ```
-$ISK_NOTES/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/<skill-name>.md
+$ISK_NOTES/YYYY-MM/.scratch/YYYY-MM-DD-<DISPLAY_TICKER>/<skill-name>.md
 ```
 
 Examples:
 - `$ISK_NOTES/2024-03/.scratch/2024-03-15-MSFT/us-valuation.md`
 - `$ISK_NOTES/2024-03/.scratch/2024-03-15-MSFT/price-history.md`
-- `$ISK_NOTES/2024-03/.scratch/2024-03-15-BTC/crypto-onchain.md`
+- `$ISK_NOTES/2024-03/.scratch/2024-03-15-BTC-USD/crypto-onchain.md`
+- `$ISK_NOTES/2024-03/.scratch/2024-03-15-1155.KL-MAYBANK/fundamentals.md`
 
 ### Monitoring outputs
 

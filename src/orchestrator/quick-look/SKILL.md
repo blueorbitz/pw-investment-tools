@@ -71,10 +71,15 @@ weights, and conviction thresholds. It is the only scoring reference needed.
 
 ## Report template
 
-Write to: `$ISK_NOTES/YYYY-MM/YYYY-MM-DD-<TICKER>-quick-look.md`
+Write to: `$ISK_NOTES/YYYY-MM/YYYY-MM-DD-<DISPLAY_TICKER>-quick-look.md`
+
+Use the ticker's **display ticker** in the title and filename — for Bursa
+tickers that is the numeric code plus `.KL` and short company name (e.g.
+`1155.KL-MAYBANK`); for others it is the normalized symbol. The data scripts
+emit `display_ticker` in their JSON output.
 
 ```markdown
-# <TICKER> - Quick Look
+# <DISPLAY_TICKER> - Quick Look
 
 Date: YYYY-MM-DD
 Market: US | Bursa | Crypto
