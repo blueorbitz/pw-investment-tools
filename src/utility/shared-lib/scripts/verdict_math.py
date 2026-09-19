@@ -20,15 +20,15 @@ import json
 import sys
 
 BASELINE_WEIGHTS = {
-    "US": {"valuation": 30, "technical": 30, "macro": 20, "sentiment": 20},
-    "Bursa": {"valuation": 35, "technical": 25, "macro": 25, "sentiment": 15},
+    "US": {"business": 20, "valuation": 20, "technical": 30, "macro": 15, "sentiment": 15},
+    "Bursa": {"business": 20, "valuation": 25, "technical": 25, "macro": 20, "sentiment": 10},
     "Crypto": {"technical": 25, "onchain": 25, "macro": 25, "valuation": 15, "sentiment": 10},
 }
 
 # Crypto treats on-chain as its own factor; equities fold derivatives into technical.
 OVERRIDE_ELIGIBLE = {
-    "US": {"valuation", "technical"},
-    "Bursa": {"valuation", "technical"},
+    "US": {"business", "valuation", "technical"},
+    "Bursa": {"business", "valuation", "technical"},
     "Crypto": {"onchain", "technical"},
 }
 
@@ -48,7 +48,7 @@ def apply_regime(baseline, market, risk, volatility, driver):
     if driver == "macro-driven":
         shifts["macro"] = shifts.get("macro", 0) + 10
     if driver == "stock-driven":
-        anchored = "onchain" if market == "Crypto" else "valuation"
+        anchored = "onchain" if market == "Crypto" else "business"
         shifts[anchored] = shifts.get(anchored, 0) + 10
     if volatility == "high-vol":
         shifts["technical"] = shifts.get("technical", 0) + 10

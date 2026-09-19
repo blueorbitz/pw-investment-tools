@@ -26,19 +26,25 @@ human-editable here, not in prompts.
 
 | Factor | Weight |
 |--------|-------:|
-| Valuation | 30% |
+| Business | 20% |
+| Valuation | 20% |
 | Technical | 30% |
-| Macro | 20% |
-| Sentiment | 20% |
+| Macro | 15% |
+| Sentiment | 15% |
+
+Business scores franchise quality (segment mix, pricing power, moat trend)
+from business-profile.md and dispatch B. Valuation scores price vs fair value
+only. A cheap commodity and a cheap franchise never score the same.
 
 ### Bursa Malaysia equities
 
 | Factor | Weight |
 |--------|-------:|
-| Valuation | 35% |
+| Business | 20% |
+| Valuation | 25% |
 | Technical | 25% |
-| Macro | 25% |
-| Sentiment | 15% |
+| Macro | 20% |
+| Sentiment | 10% |
 
 Adjustments: dividend yield above 5% with stable payout adds conviction;
 volume confirmation is required for any bullish technical signal (otherwise
@@ -69,7 +75,7 @@ Classify the regime from macro-context and technical scratch: risk
 | Condition | Shift |
 |-----------|-------|
 | macro-driven | +10pp to Macro |
-| stock-driven | +10pp to Valuation (equities) / On-chain (crypto) |
+| stock-driven | +10pp to Business (equities) / On-chain (crypto) |
 | high-vol | +10pp to Technical, taken from Sentiment |
 | risk-off | +5pp to Macro |
 | risk-on + confirmed trend | +5pp to Technical |
@@ -96,7 +102,7 @@ One dominant override-eligible factor at strong bullish/bearish, with good
 data quality and nothing at the opposite extreme, escalates conviction one
 level (Low→Medium, Medium→High).
 
-- Equities: valuation extremes; technical breakouts **with volume confirmation**.
+- Equities: business quality extremes; valuation extremes; technical breakouts **with volume confirmation**.
 - Crypto: on-chain whale accumulation/distribution; derivatives extremes.
 - Sentiment may never escalate on its own. Ever.
 

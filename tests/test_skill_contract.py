@@ -45,9 +45,10 @@ SCRIPT_OWNER = {
 
 # Market-conditional *data skills* deep-research fans out.
 DEEP_DATA_SKILLS = {
-    "US": ["data/price-history", "data/us-filings"],
+    "US": ["data/price-history", "data/business-profile", "data/us-filings"],
     "Bursa": [
         "data/price-history",
+        "data/business-profile",
         "data/bursa-fundamentals",
         "data/bursa-announcements",
     ],

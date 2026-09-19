@@ -7,6 +7,7 @@ description: Produces a valuation assessment for Bursa Malaysia equities with hi
 
 Reads from scratch:
 - `$ISK_NOTES/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/fundamentals.md` (required)
+- `$ISK_NOTES/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/business-profile.md` (required for the moat section)
 - `$ISK_NOTES/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/bursa-fundamentals.md` (optional, for peer context)
 
 ## Output format
@@ -72,9 +73,12 @@ status: complete | partial | unavailable
 
 ## Moat assessment (MY context)
 
+- Business: <segment mix + pricing evidence, cited to business-profile.md>
 - Market position: <#1, #2 in sector? oligopoly? regulated?>
 - Competitive advantages: <brand, licenses, network effects, scale, GLCs>
 - Bursa-specific moats: <government-linked companies have policy tailwinds, banking licenses are scarce, plantation land is finite>
+- What would kill it: <one line, biggest structural threat>
+- Moat evidence rule: every moat call cites its source. Uncited claims cap at narrow.
 
 ## Key risks to valuation
 
@@ -102,10 +106,11 @@ status: complete | partial | unavailable
 
 - If fundamentals scratch is `unavailable`, write `status: unavailable`.
 - If fundamentals is `partial` (common for KLSE Screener), do what you can. PE and DY are the minimum for a useful assessment.
-- If bursa-fundamentals (market overview) is missing, skip peer comparison or use general knowledge of sector multiples.
+- If bursa-fundamentals (market overview) is missing, skip peer comparison or fetch 2-3 live peer quotes via `data/fundamentals/scripts/quote_fetch.py` (same sector). Never use general-knowledge multiples — mark unfetched peers as gaps.
 - Never invent financial data. If metrics are missing, say so.
 
 ## Dependencies
 
 - `data/fundamentals` - provides individual stock financials (reads its scratch)
+- `data/business-profile` - segment mix, competitors, moat inputs (required for moat section)
 - `data/bursa-fundamentals` - provides market overview and peer context (optional)

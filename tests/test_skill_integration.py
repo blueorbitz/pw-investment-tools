@@ -48,7 +48,7 @@ CASES = [
 MODE_SECTIONS = {
     "quick-look": ["## Verdict", "## Factor summary", "## Thesis",
                    "## Fundamentals", "## Technical setup"],
-    "deep-research": ["## Verdict", "## Thesis", "## Fundamentals",
+    "deep-research": ["## Verdict", "## Thesis", "## Business", "## Fundamentals",
                       "## Technical setup"],
 }
 

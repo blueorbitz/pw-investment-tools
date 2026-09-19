@@ -40,8 +40,8 @@ Fetch the data every run needs, regardless of what the gate later decides:
 
 | Market | Fetches (all parallel) |
 |--------|------------------------|
-| US | `financials_fetch.py` + `price_history.py` (benchmark SPY) + `quote_fetch.py` + `data/us-filings` |
-| Bursa | `financials_fetch.py` + `price_history.py` (benchmark ^KLSE) + `quote_fetch.py` + `data/bursa-fundamentals` + `data/bursa-announcements` |
+| US | `financials_fetch.py` + `price_history.py` (benchmark SPY) + `quote_fetch.py` + `data/business-profile` + `data/us-filings` |
+| Bursa | `financials_fetch.py` + `price_history.py` (benchmark ^KLSE) + `quote_fetch.py` + `data/business-profile` + `data/bursa-fundamentals` + `data/bursa-announcements` |
 | Crypto | `price_history.py` (benchmark BTC-USD for alts) + `quote_fetch.py` + `data/crypto-fundamentals` |
 
 Prices and quotes are fetched live every run — `yahoo_cache.py` serves its
@@ -137,11 +137,12 @@ Use `utility/report-writer` conventions to assemble the report with these sectio
 
 1. **Verdict** - includes the one-line gate result (quality-pass | speculative | reject)
 2. **Thesis** - expanded reasoning from verdict-synthesis
-3. **Fundamentals** - compressed summary from valuation scratch
-4. **Technical setup** - compressed summary from technical scratch
-5. **Sentiment and news** - compressed summary from sentiment scratch (when fetched)
-6. **Macro context** - compressed summary from macro-context scratch (when fetched)
-7. **Risks** - synthesized from all fetched packs
+3. **Business** - what it sells, segment mix, moat evidence (from business-profile + dispatch B / bursa-valuation)
+4. **Fundamentals** - compressed summary from valuation scratch (price vs fair value)
+5. **Technical setup** - compressed summary from technical scratch
+6. **Sentiment and news** - compressed summary from sentiment scratch (when fetched)
+7. **Macro context** - compressed summary from macro-context scratch (when fetched)
+8. **Risks** - synthesized from all fetched packs
 
 Write to: `$ISK_NOTES/YYYY-MM/YYYY-MM-DD-<DISPLAY_TICKER>-deep-research.md`
 
@@ -177,7 +178,11 @@ Thesis: <one sentence>
 
 ## Fundamentals
 
-<from valuation analysis>
+<price vs fair value, from valuation analysis>
+
+## Business
+
+<what it sells, segment mix, moat evidence>
 
 ## Technical setup
 
@@ -203,6 +208,7 @@ Scratch directory preserved at: `$ISK_NOTES/YYYY-MM/.scratch/YYYY-MM-DD-<DISPLAY
 
 One file per skill or script invoked:
 - `fundamentals.md`
+- `business-profile.md` (US + Bursa equities)
 - `price-history.md`
 - `quote.md` (quote_fetch output: multiples, market cap, FCF)
 - `quality-gate.md` (gate tier, scripted checks, checklist, dispatch B judgment)
@@ -227,6 +233,7 @@ One file per skill or script invoked:
 ### Data skills and scripts (market-conditional)
 
 - `data/fundamentals` scripts - `financials_fetch.py` (US, Bursa)
+- `data/business-profile` (US, Bursa equities)
 - `data/price-history` scripts - `price_history.py` (all markets)
 - `data/fundamentals/scripts/quote_fetch.py` - multiples, all markets
 - `data/us-filings` (US)

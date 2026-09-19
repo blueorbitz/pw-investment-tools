@@ -11,7 +11,7 @@ A library of composable Kiro skills organized by concern (data fetching, analysi
 ## User stories
 
 1. As an investor, I want to run a quick-look on a ticker so I can decide in two minutes whether it's worth deeper research.
-2. As an investor, I want to run deep-research on a ticker so I get a complete report covering fundamentals, technicals, sentiment, macro context, and a final verdict.
+2. As an investor, I want to run deep-research on a ticker so I get a complete report covering business quality and moat, fundamentals, technicals, sentiment, macro context, and a final verdict.
 3. As an investor, I want the system to determine the correct market (Bursa/US/Crypto) from my ticker so I don't have to specify it manually every time.
 4. As an investor, I want data skills to fetch structured API data first and fall back to web search only when needed, so I save tokens and get reliable numbers.
 5. As an investor, I want each report to open with a clear Buy/Sell/Hold verdict, conviction level, target price, timeframe, and stop loss so I can scan the decision without reading the full report.
@@ -74,7 +74,8 @@ A library of composable Kiro skills organized by concern (data fetching, analysi
 - Scratch: `~/notes/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/`
 - Portfolio state: `~/notes/portfolio/holdings.yaml` (YAML, git-tracked, optional `account` field for multi-broker)
 - Watchlist: `~/notes/watchlist/watchlist.yaml`
-- Report sections: Verdict, Thesis, Fundamentals, Technical Setup, Sentiment & News, Macro Context, Risks, Position Sizing.
+- Report sections: Verdict, Thesis, Business (equity deep-research), Fundamentals, Technical Setup, Sentiment & News, Macro Context, Risks, Position Sizing.
+- Equity verdicts score business quality (20%) as its own factor, separate from price-vs-value; a cheap commodity never scores like a cheap franchise.
 - Verdict block: Action, Conviction, Target Price, Timeframe, Stop Loss, one-line thesis. Key-value format for scanning.
 
 ### Monitoring

@@ -77,6 +77,10 @@ Thesis: <one sentence summary>
 
 <one paragraph expanding on the verdict reasoning>
 
+## Business
+
+<what it sells, segment mix, moat evidence — deep-research equities only>
+
 ## Fundamentals
 
 <valuation and financial health assessment>
@@ -98,7 +102,7 @@ Thesis: <one sentence summary>
 <what could go wrong, key assumptions that could break>
 ```
 
-Not all sections are required for every report type. Quick-look reports use: Verdict (with factor summary), Thesis, Fundamentals, Technical setup. Deep-research reports use all sections. The gate line applies only to reports that ran the quality gate; quick-look and monitor reports omit it.
+Not all sections are required for every report type. Quick-look reports use: Verdict (with factor summary), Thesis, Fundamentals, Technical setup. Deep-research equity reports use all sections including Business. Deep-research crypto reports omit Business. The gate line applies only to reports that ran the quality gate; quick-look and monitor reports omit it.
 
 ### Verdict block format
 

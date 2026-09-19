@@ -41,13 +41,21 @@ status: complete | partial | unavailable
 
 ## Recent filings summary
 
-### Latest 10-K/10-Q highlights
+### Latest 10-K/10-Q highlights (required reading, not best-effort)
 
 - Filing date: YYYY-MM-DD
+- Item 1 (business): <what it sells, segment mix — cross-checks business-profile.md>
+- Item 7 (MD&A): <margin drivers, segment trends, management explanation of results>
 - Revenue guidance (if provided): <any forward guidance>
-- Risk factors flagged: <new or notable risk disclosures>
+- Risk factors flagged: <new or notable risk disclosures vs prior year>
 - Key operational metrics: <anything material that stands out>
 - Management commentary highlights: <tone and forward outlook>
+
+### Proxy (DEF 14A, best-effort)
+
+- CEO pay vs performance alignment: <one line>
+- Related-party transactions or dual-class control: <flag if present>
+- Say-on-pay result: <approval % if disclosed>
 
 ## Options flow (if available)
 
@@ -90,7 +98,7 @@ If EDGAR API is unavailable or rate-limited, use `utility/web-search` to find re
 2. If EDGAR rate-limits the request (HTTP 429), back off and note "rate limited, partial data."
 3. Form 4 data is the highest priority. If only Form 4 is available, that's still useful.
 4. 13F data is quarterly and may be stale. Note the quarter date so the analysis skill knows how fresh it is.
-5. 10-K/10-Q summaries are best-effort. If the filing is too long to parse meaningfully, extract just the "Risk Factors" updates and management guidance.
+5. 10-K Item 1 and Item 7 are required sections, not best-effort. If the filing is too long to parse meaningfully, extract at minimum the segment revenue split, the MD&A margin explanation, and any new risk-factor language.
 6. If all sources fail, write `status: unavailable` with reason.
 
 ## Dependencies

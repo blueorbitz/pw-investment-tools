@@ -71,7 +71,11 @@ on either caps the outcome at speculative no matter how good the numbers look.
 ## Dispatch B: deep analysis (US valuation factor)
 
 Runs for US candidates after dispatch A returns quality-pass or speculative —
-never for reject. Read the vendored references in order:
+never for reject. Requires `business-profile.md` and `us-filings.md` scratch
+from the shared fetch. If the profile is `partial`, moat caps at narrow. If it
+is `unavailable`, moat is `unknown` and the valuation factor caps at neutral.
+
+Read the vendored references in order:
 
 1. `references/03-business-moat.md` - classify the moat type, strength, and trend
 2. `references/04-management-governance.md` - integrity, capital allocation, owner mentality
@@ -99,10 +103,16 @@ verdict-synthesis needs:
 
 - **Moat**: type, wide/narrow, widening/narrowing, evidence (margins, share, NRR)
 - **Management**: rating on the three dimensions, one red flag or green flag each
+- **Business**: segment mix, pricing-power evidence, top competitors, moat-kill line — all cited to business-profile.md
 - **Earnings quality**: owner-earnings estimate vs reported net income; red flags found
 - **Intrinsic value**: method used, estimate range, margin of safety at current price
 - **Verdict line**: the valuation factor strength label (rubric words: strong/mild
   bullish, neutral, mild/strong bearish) with one-line rationale
+
+Moat evidence rule: every moat call cites its source — filing note, margin/share
+trend, or `[web]` outlet. Four citations minimum per wide-moat claim
+(type, margin evidence, share/NRR evidence, trend). Uncited moat claims cap at
+narrow. State what would kill the moat in one line.
 
 Write to scratch at `$ISK_NOTES/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/us-valuation.md`
 with the standard scratch header (`skill: quality-gate`). This file is the US
@@ -128,6 +138,8 @@ dispatch B judgment.
 ## Dependencies
 
 - `data/fundamentals` scratch - statements and dividend history (upstream, already written)
+- `data/business-profile` scratch - segment mix, competitors, moat inputs (required for dispatch B)
+- `data/us-filings` scratch - Item 1/7 highlights cross-check (required for dispatch B)
 - `data/fundamentals/scripts/quote_fetch.py` - multiples for the intrinsic-value check
 - `analysis/valuation-baseline` scripts - `baseline_calc.py`, quote-aware fair multiple for dispatch B
 - `utility/shared-lib/verdict_rubric.md` - strength labels for the factor verdict

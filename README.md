@@ -52,8 +52,8 @@ flowchart TB
 |-------|--------|
 | Research entry points | `orchestrator/quick-look`, `orchestrator/deep-research` |
 | Scheduled monitors | `monitor/portfolio-review`, `monitor/watchlist-scan`, `monitor/alert-checker` |
-| Shared data | `data/fundamentals` for US and Bursa financials, `data/price-history` for all markets |
-| Quality gate | `analysis/quality-gate` - quick screen plus the buffett-based deep US valuation |
+| Shared data | `data/fundamentals` for US and Bursa financials, `data/business-profile` for segment mix and moat inputs (equities), `data/price-history` for all markets |
+| Quality gate | `analysis/quality-gate` - quick screen plus the buffett-based deep US valuation (dispatch B cites business-profile) |
 | Valuation baseline | `analysis/valuation-baseline` - quote-aware fair multiple (rates, growth, moat) for dispatch B |
 | US pack | `data/us-macro`, `data/us-filings`; `analysis/us-technical`, `analysis/us-sentiment` |
 | Bursa pack | `data/bursa-announcements`, `data/bursa-fundamentals`, `data/bursa-macro`; `analysis/bursa-valuation`, `analysis/bursa-technical`, `analysis/bursa-sentiment` |
@@ -71,11 +71,11 @@ Skills are instructions for the Kiro agent, not standalone programs. The agent r
 **Data flow:**
 
 1. Orchestrator detects market from ticker format
-2. Shared data scripts fetch and write to scratch (intermediate files)
+2. Shared data scripts fetch and write to scratch (intermediate files), including business-profile for equities
 3. The quality gate screens the candidate and routes which factor packs run
 4. Factor packs (parallel sub-agents) read scratch, produce judgments
-5. Verdict synthesis labels the factors; verdict_math.py computes the Buy/Sell/Hold
-6. Final report written to notes directory
+5. Verdict synthesis labels the factors (business + valuation + technical + macro + sentiment for equities); verdict_math.py computes the Buy/Sell/Hold
+6. Final report written to notes directory (equity deep-research carries a Business section)
 
 ## Project structure
 
@@ -89,9 +89,10 @@ src/
 │
 ├── data/                 # Fetch and normalize (never interpret)
 │   ├── fundamentals/         # US + Bursa financials + quote_fetch.py (multiples)
+│   ├── business-profile/     # Equities: segment mix, customers, competitors, moat inputs
 │   ├── price-history/        # OHLCV + indicators, all markets
 │   ├── us-macro/             # Fed rates, yields, liquidity
-│   ├── us-filings/           # SEC Form 4, 13F, 10-K/10-Q
+│   ├── us-filings/           # SEC Form 4, 13F, 10-K Item 1/7, proxy
 │   ├── bursa-announcements/  # Insider transactions
 │   ├── bursa-fundamentals/   # Market overview, fund flows
 │   ├── bursa-macro/          # OPR, MYR, CPO

@@ -18,6 +18,7 @@ yourself.
 Reads all available analysis scratch files from: `$ISK_NOTES/YYYY-MM/.scratch/YYYY-MM-DD-<TICKER>/`
 
 Expected files (not all required):
+- `business-profile.md` (equities: business factor source, with dispatch B / bursa-valuation judgment)
 - `us-valuation.md` (written by the quality gate's dispatch B) or `bursa-valuation.md` or `crypto-valuation.md`
 - `us-technical.md` or `bursa-technical.md` or `crypto-technical.md`
 - `macro-context.md`
@@ -67,6 +68,7 @@ the label words, never the numbers.
 
 | Factor | Signal | Strength | Weight |
 |--------|--------|----------|--------|
+| Business (equities only) | strong / weak franchise | strong/mild bullish · neutral · mild/strong bearish | from verdict_math.py |
 | Valuation | cheap / fair / expensive | strong/mild bullish · neutral · mild/strong bearish | from verdict_math.py |
 | Technical | bullish / bearish / neutral | <label words> | from verdict_math.py |
 | Macro | bullish / bearish / neutral | <label words> | from verdict_math.py |
@@ -107,12 +109,17 @@ Composite score: <from verdict_math.py, e.g. "+1.4, strong bullish">
 ```bash
 python <ISK_ROOT>/utility/shared-lib/scripts/verdict_math.py \
   --market US \
-  --label valuation=2 --label technical=1 --label macro=0 --label sentiment=1 \
+  --label business=2 --label valuation=1 --label technical=1 --label macro=0 --label sentiment=1 \
   --regime-risk neutral --volatility high-vol --driver stock-driven \
   --missing macro \
   --data-quality complete \
   --volume-confirmed
 ```
+
+Business labels franchise quality from business-profile.md plus the dispatch B
+(US) or bursa-valuation (Bursa) moat judgment. Valuation labels price vs fair
+value only. A `business-profile.md` with `status: unavailable` forces business
+to neutral at best; `partial` caps it at mild bullish/bearish.
 
 4. Copy `weights_applied`, `weights_baseline`, `composite_score`, and
    `conviction` from the output into the scratch header and factor summary
