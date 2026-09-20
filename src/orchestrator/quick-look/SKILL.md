@@ -1,6 +1,7 @@
 ---
 name: quick-look
 description: One-pass fast filter. Given a ticker, detects the market, runs three data scripts, then a single judgment pass writes the report using the shared rubric. No analysis-skill reads, no LLM-written per-skill scratch.
+disable-model-invocation: true
 ---
 
 Quick-look is one orchestrator pass. The LLM's only job is the final judgment;

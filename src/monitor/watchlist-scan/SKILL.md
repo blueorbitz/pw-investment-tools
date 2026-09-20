@@ -1,6 +1,7 @@
 ---
 name: watchlist-scan
 description: Performs lightweight checks on watchlist tickers for price movement, entry conditions, material news, and upcoming catalysts.
+disable-model-invocation: true
 ---
 
 ## Input

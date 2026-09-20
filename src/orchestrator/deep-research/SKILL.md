@@ -1,6 +1,7 @@
 ---
 name: deep-research
 description: Gate-routed full research pipeline for any ticker across all three markets. Shared data fetch, quality gate, conditional factor packs fanned out to parallel sub-agents, verdict via verdict_math.py, compressed report.
+disable-model-invocation: true
 ---
 
 ## Input

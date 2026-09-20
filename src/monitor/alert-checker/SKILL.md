@@ -1,6 +1,7 @@
 ---
 name: alert-checker
 description: Reads holdings.yaml, evaluates custom alert conditions against current market data, and writes output only when conditions are breached.
+disable-model-invocation: true
 ---
 
 When no conditions are breached, this skill writes nothing (silent success).

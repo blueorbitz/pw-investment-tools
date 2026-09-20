@@ -1,6 +1,7 @@
 ---
 name: portfolio-review
 description: Fetches current prices for portfolio positions, compares against thesis/targets/stops, calculates P&L, and flags positions needing action.
+disable-model-invocation: true
 ---
 
 ## Input
