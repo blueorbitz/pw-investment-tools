@@ -1,7 +1,9 @@
 .kiro
 .vscode
+.commandcode
 .notes
 .cache
 .env
+opencode.json
 tests/logs
 __pycache__
